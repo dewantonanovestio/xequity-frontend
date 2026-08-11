@@ -8,11 +8,13 @@ import type {
 import type { Fill, Order, OrderState, PaginatedOrders } from "@/lib/types/order";
 import type { CashRecon, SupplyRecon } from "@/lib/types/recon";
 import type {
+  AdminSymbol,
   EndUser,
   Holding,
   PnlEntry,
   SymbolMeta,
   SymbolPricing,
+  SymbolStatus,
 } from "@/lib/types/user";
 import type { UserBalance } from "@/lib/types/balance";
 import type { Activity, PaginatedActivities } from "@/lib/types/activity";
@@ -357,6 +359,31 @@ export function adaptPricing(value: unknown): SymbolPricing {
     buySpreadBps: asNumber(row.buySpreadBps),
     sellSpreadBps: asNumber(row.sellSpreadBps),
   };
+}
+
+const VALID_SYMBOL_STATUSES: SymbolStatus[] = [
+  "ACTIVE", "MINT_HALTED", "REDEEM_HALTED", "HALTED", "DELISTING", "RETIRED",
+];
+
+function adaptSingleAdminSymbol(item: unknown): AdminSymbol {
+  const row = isRecord(item) ? item : {};
+  const status = asString(row.status, "ACTIVE");
+  return {
+    ticker: asString(row.ticker),
+    tokenProxyAddr: asNullableString(row.tokenProxyAddr),
+    status: (VALID_SYMBOL_STATUSES.includes(status as SymbolStatus) ? status : "ACTIVE") as SymbolStatus,
+    createdAt: asString(row.createdAt),
+    updatedAt: asString(row.updatedAt),
+  };
+}
+
+export function adaptAdminSymbols(value: unknown): AdminSymbol[] {
+  if (!Array.isArray(value)) return [];
+  return value.map(adaptSingleAdminSymbol);
+}
+
+export function adaptAdminSymbol(value: unknown): AdminSymbol {
+  return adaptSingleAdminSymbol(value);
 }
 
 export function adaptPnl(value: unknown): PnlEntry[] {

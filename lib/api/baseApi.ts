@@ -60,6 +60,7 @@ export const baseApi = createApi({
     "PnL",
     "Activities",
     "Clients",
+    "Symbols",
   ],
   endpoints: () => ({}),
 });

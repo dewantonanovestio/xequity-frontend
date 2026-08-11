@@ -17,6 +17,26 @@ export interface CreateEndUserRequest {
   readonly externalId: string;
 }
 
+export type SymbolStatus = "ACTIVE" | "MINT_HALTED" | "REDEEM_HALTED" | "HALTED" | "DELISTING" | "RETIRED";
+
+export interface AdminSymbol {
+  readonly ticker: string;
+  readonly tokenProxyAddr: string | null;
+  readonly status: SymbolStatus;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+}
+
+export interface OnboardSymbolRequest {
+  readonly ticker: string;
+  readonly tokenProxyAddr: string;
+}
+
+export interface UpdateSymbolStatusRequest {
+  readonly ticker: string;
+  readonly status: SymbolStatus;
+}
+
 export interface Holding {
   readonly symbol: string;
   readonly qty: number;

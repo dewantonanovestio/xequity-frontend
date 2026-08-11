@@ -4,6 +4,7 @@ import {
   Activity,
   BookOpenText,
   Building2,
+  ChartCandlestick,
   ClipboardList,
   Clock,
   Scale,
@@ -23,6 +24,7 @@ const adminNavItems = [
   { page: "ledger", label: "Ledger", icon: BookOpenText },
   { page: "recon", label: "Recon", icon: Scale },
   { page: "clients", label: "Clients", icon: Building2 },
+  { page: "symbols", label: "Symbols", icon: ChartCandlestick },
 ];
 
 const clientNavItems = [

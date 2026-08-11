@@ -29,6 +29,7 @@ import type {
   StateTransition,
 } from "@/lib/types/order";
 import type { CashRecon } from "@/lib/types/recon";
+import type { AdminSymbol, SymbolStatus } from "@/lib/types/user";
 
 type MockQueryResult =
   | { data: unknown }
@@ -43,10 +44,23 @@ const transactions = ledgerFixtures.transactions as Transaction[];
 const sessionOverrides = new Map<string, Order>();
 const sessionOrders: Order[] = [];
 
+const adminSymbols: AdminSymbol[] = [
+  { ticker: "AAPL", tokenProxyAddr: "0x1234567890abcdef1234567890abcdef12345678", status: "ACTIVE", createdAt: "2024-01-10T00:00:00Z", updatedAt: "2024-01-10T00:00:00Z" },
+  { ticker: "MSFT", tokenProxyAddr: "0xabcdef1234567890abcdef1234567890abcdef12", status: "ACTIVE", createdAt: "2024-01-10T00:00:00Z", updatedAt: "2024-01-10T00:00:00Z" },
+  { ticker: "GOOGL", tokenProxyAddr: "0x7890abcdef1234567890abcdef1234567890abcd", status: "ACTIVE", createdAt: "2024-01-10T00:00:00Z", updatedAt: "2024-01-10T00:00:00Z" },
+  { ticker: "TSLA", tokenProxyAddr: null, status: "MINT_HALTED", createdAt: "2024-02-01T00:00:00Z", updatedAt: "2024-03-01T00:00:00Z" },
+  { ticker: "NVDA", tokenProxyAddr: "0xef1234567890abcdef1234567890abcdef123456", status: "ACTIVE", createdAt: "2024-02-15T00:00:00Z", updatedAt: "2024-02-15T00:00:00Z" },
+  { ticker: "SPY", tokenProxyAddr: "0x567890abcdef1234567890abcdef1234567890ab", status: "ACTIVE", createdAt: "2024-03-01T00:00:00Z", updatedAt: "2024-03-01T00:00:00Z" },
+];
+
 export function resetMockState(): void {
   sessionOverrides.clear();
   sessionOrders.length = 0;
 }
+
+const VALID_SYMBOL_STATUSES: SymbolStatus[] = [
+  "ACTIVE", "MINT_HALTED", "REDEEM_HALTED", "HALTED", "DELISTING", "RETIRED",
+];
 
 const referencePrices: Record<string, number> = {
   AAPL: 226.4,
@@ -70,6 +84,7 @@ const staticRoutes: Record<string, () => unknown> = {
   "POST /admin/recon/cash": () => ({ success: true }),
   "GET /end-users": () => endUserFixtures,
   "GET /symbols": () => symbolFixtures,
+  "GET /admin/symbols": () => [...adminSymbols],
 };
 
 const transactionSortFields: TransactionSortField[] = [
@@ -439,6 +454,43 @@ function handleDynamicRoute(
       "CANCELLED",
       `Order ${id} cannot be cancelled from its current state`,
     );
+  }
+
+  if (method === "POST" && path === "/admin/symbols") {
+    const request = typeof body === "object" && body !== null
+      ? (body as Record<string, unknown>)
+      : {};
+    const ticker = String(request.ticker ?? "").toUpperCase().trim();
+    const tokenProxyAddr = typeof request.tokenProxyAddr === "string" ? request.tokenProxyAddr.trim() : null;
+    if (!ticker) {
+      return { error: { status: 400, data: { message: "Ticker is required" } } };
+    }
+    if (adminSymbols.some((s) => s.ticker === ticker)) {
+      return { error: { status: 409, data: { message: `Symbol ${ticker} already exists` } } };
+    }
+    const now = new Date().toISOString();
+    const newSymbol: AdminSymbol = { ticker, tokenProxyAddr, status: "ACTIVE", createdAt: now, updatedAt: now };
+    adminSymbols.push(newSymbol);
+    return { data: newSymbol };
+  }
+
+  const symbolStatusMatch = path.match(/^\/admin\/symbols\/([^/]+)\/status$/);
+  if (method === "PATCH" && symbolStatusMatch) {
+    const ticker = decodeURIComponent(symbolStatusMatch[1]).toUpperCase();
+    const request = typeof body === "object" && body !== null
+      ? (body as Record<string, unknown>)
+      : {};
+    const status = String(request.status ?? "") as SymbolStatus;
+    if (!VALID_SYMBOL_STATUSES.includes(status)) {
+      return { error: { status: 400, data: { message: `Invalid status: ${status}` } } };
+    }
+    const idx = adminSymbols.findIndex((s) => s.ticker === ticker);
+    if (idx === -1) {
+      return { error: { status: 404, data: { message: `Symbol ${ticker} not found` } } };
+    }
+    const updated: AdminSymbol = { ...adminSymbols[idx], status, updatedAt: new Date().toISOString() };
+    adminSymbols[idx] = updated;
+    return { data: updated };
   }
 
   return null;

@@ -1,6 +1,6 @@
-import { adaptEndUsers, adaptSymbolMeta } from '@/lib/api/adapters';
+import { adaptEndUsers, adaptSymbolMeta, adaptAdminSymbols, adaptAdminSymbol } from '@/lib/api/adapters';
 import { baseApi } from '@/lib/api/baseApi';
-import type { CreateEndUserRequest, EndUser, SymbolMeta } from '@/lib/types/user';
+import type { AdminSymbol, CreateEndUserRequest, EndUser, OnboardSymbolRequest, SymbolMeta, UpdateSymbolStatusRequest } from '@/lib/types/user';
 
 function adaptSingleEndUser(value: unknown): EndUser {
   return adaptEndUsers([value])[0] ?? {
@@ -39,6 +39,25 @@ export const userApi = baseApi.injectEndpoints({
       query: () => '/symbols',
       transformResponse: adaptSymbolMeta,
     }),
+    getAdminSymbols: build.query<AdminSymbol[], void>({
+      query: () => '/admin/symbols',
+      transformResponse: adaptAdminSymbols,
+      providesTags: ['Symbols'],
+    }),
+    onboardSymbol: build.mutation<AdminSymbol, OnboardSymbolRequest>({
+      query: (body) => ({ url: '/admin/symbols', method: 'POST', body }),
+      transformResponse: adaptAdminSymbol,
+      invalidatesTags: ['Symbols'],
+    }),
+    updateSymbolStatus: build.mutation<AdminSymbol, UpdateSymbolStatusRequest>({
+      query: ({ ticker, status }) => ({
+        url: `/admin/symbols/${ticker}/status`,
+        method: 'PATCH',
+        body: { status },
+      }),
+      transformResponse: adaptAdminSymbol,
+      invalidatesTags: ['Symbols'],
+    }),
   }),
 });
 
@@ -48,4 +67,7 @@ export const {
   useLazyGetEndUserQuery,
   useCreateEndUserMutation,
   useGetSymbolsQuery,
+  useGetAdminSymbolsQuery,
+  useOnboardSymbolMutation,
+  useUpdateSymbolStatusMutation,
 } = userApi;
