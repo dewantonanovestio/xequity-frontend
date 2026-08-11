@@ -1,0 +1,37 @@
+[
+  {
+    "id": "fill-001",
+    "type": "BUY",
+    "symbol": "AAPL",
+    "qty": "10.000000000",
+    "amount": "2250.000000",
+    "price": "225.000000",
+    "state": "CONFIRMED",
+    "alpacaFillId": "alpaca-fill-001",
+    "referenceId": "ord_001",
+    "createdAt": "2026-08-03T07:45:00.000Z"
+  },
+  {
+    "id": "fill-002",
+    "type": "BUY",
+    "symbol": "MSFT",
+    "qty": "5.000000000",
+    "amount": "2098.750000",
+    "price": "419.750000",
+    "state": "CONFIRMED",
+    "alpacaFillId": "alpaca-fill-002",
+    "referenceId": "ord_002",
+    "createdAt": "2026-08-02T10:20:00.000Z"
+  },
+  {
+    "id": "fill-003",
+    "type": "SELL",
+    "symbol": "AAPL",
+    "qty": "3.000000000",
+    "amount": "654.000000",
+    "state": "CONFIRMED",
+    "alpacaFillId": "alpaca-fill-003",
+    "referenceId": "red_001",
+    "createdAt": "2026-08-01T14:30:00.000Z"
+  }
+]

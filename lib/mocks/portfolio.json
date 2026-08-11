@@ -1,0 +1,16 @@
+{
+  "user-nano-001": [
+    { "symbol": "AAPL", "qty": "10", "avgCost": "205.40" },
+    { "symbol": "MSFT", "qty": "4.5", "avgCost": "401.20" },
+    { "symbol": "GOOGL", "qty": "8", "avgCost": "188.75" }
+  ],
+  "user-acme-014": [
+    { "symbol": "TSLA", "qty": "5", "avgCost": "292.10" },
+    { "symbol": "AMZN", "qty": "12", "avgCost": "214.25" }
+  ],
+  "user-block-022": [
+    { "symbol": "MSFT", "qty": "8", "avgCost": "415" },
+    { "symbol": "NVDA", "qty": "20", "avgCost": "173.30" },
+    { "symbol": "SPY", "qty": "3", "avgCost": "625.40" }
+  ]
+}

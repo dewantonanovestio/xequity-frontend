@@ -1,0 +1,16 @@
+{
+  "user-nano-001": [
+    { "symbol": "AAPL", "realizedPnl": "125.50", "unrealizedPnl": "184.20" },
+    { "symbol": "MSFT", "realizedPnl": "-42.15", "unrealizedPnl": "96.75" },
+    { "symbol": "GOOGL", "realizedPnl": "31.00", "unrealizedPnl": "-55.25" }
+  ],
+  "user-acme-014": [
+    { "symbol": "TSLA", "realizedPnl": "210.40", "unrealizedPnl": "-72.10" },
+    { "symbol": "AMZN", "realizedPnl": "54.00", "unrealizedPnl": "112.60" }
+  ],
+  "user-block-022": [
+    { "symbol": "MSFT", "realizedPnl": "-18.20", "unrealizedPnl": "44.30" },
+    { "symbol": "NVDA", "realizedPnl": "302.80", "unrealizedPnl": "156.40" },
+    { "symbol": "SPY", "realizedPnl": "75.00", "unrealizedPnl": "-21.25" }
+  ]
+}

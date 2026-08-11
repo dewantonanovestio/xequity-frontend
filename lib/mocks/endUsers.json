@@ -1,0 +1,5 @@
+[
+  { "endUserId": "user-nano-001", "clientId": "client_nanovest", "externalId": "NV-001", "walletId": "wallet-nano-001", "displayName": "Alya Putri" },
+  { "endUserId": "user-acme-014", "clientId": "client_acme", "externalId": "AC-014", "walletId": "wallet-acme-014", "displayName": "Bima Santoso" },
+  { "endUserId": "user-block-022", "clientId": "client_blockprime", "externalId": "BP-022", "walletId": "wallet-block-022", "displayName": "Citra Wijaya" }
+]

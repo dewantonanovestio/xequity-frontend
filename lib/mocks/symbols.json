@@ -1,0 +1,9 @@
+[
+  { "ticker": "AAPL",  "tradable": true, "fractionable": true,  "tradableOvernight": false },
+  { "ticker": "MSFT",  "tradable": true, "fractionable": true,  "tradableOvernight": false },
+  { "ticker": "GOOGL", "tradable": true, "fractionable": true,  "tradableOvernight": false },
+  { "ticker": "TSLA",  "tradable": true, "fractionable": true,  "tradableOvernight": false },
+  { "ticker": "AMZN",  "tradable": true, "fractionable": true,  "tradableOvernight": false },
+  { "ticker": "NVDA",  "tradable": true, "fractionable": true,  "tradableOvernight": false },
+  { "ticker": "SPY",   "tradable": true, "fractionable": false, "tradableOvernight": false }
+]

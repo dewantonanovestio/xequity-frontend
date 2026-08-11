@@ -1,0 +1,222 @@
+{
+  "orders": [
+    {
+      "id": "ord_001", "side": "BUY", "symbol": "AAPL", "endUserId": "user-nano-001", "clientId": "client_nanovest", "clientName": "Nanovest", "type": "LIMIT", "qty": 10, "notional": 2250, "limitPrice": 225, "state": "MINT_FAILED", "clientIdemKey": "idem-ord-001", "alpacaOrderId": "alpaca-ord-001", "pinnedSpreadBps": 35, "walletId": "wallet-nano-001", "createdAt": "2026-08-03T07:15:00.000Z", "updatedAt": "2026-08-03T07:45:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-08-03T07:15:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "FILLED", "transitionedAt": "2026-08-03T07:32:00.000Z" },
+        { "fromState": "FILLED", "toState": "MINTING", "transitionedAt": "2026-08-03T07:35:00.000Z" },
+        { "fromState": "MINTING", "toState": "MINT_FAILED", "transitionedAt": "2026-08-03T07:45:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_002", "side": "BUY", "symbol": "TSLA", "endUserId": "user-acme-014", "clientId": "client_acme", "clientName": "Acme Capital", "type": "MARKET", "qty": 5, "notional": 1540, "limitPrice": null, "state": "SETTLED", "clientIdemKey": "idem-ord-002", "alpacaOrderId": "alpaca-ord-002", "pinnedSpreadBps": 28, "walletId": "wallet-acme-014", "createdAt": "2026-08-03T06:30:00.000Z", "updatedAt": "2026-08-03T06:48:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-08-03T06:30:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "FILLED", "transitionedAt": "2026-08-03T06:42:00.000Z" },
+        { "fromState": "FILLED", "toState": "MINTING", "transitionedAt": "2026-08-03T06:44:00.000Z" },
+        { "fromState": "MINTING", "toState": "SETTLED", "transitionedAt": "2026-08-03T06:48:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_003", "side": "BUY", "symbol": "MSFT", "endUserId": "user-block-022", "clientId": "client_blockprime", "clientName": "BlockPrime", "type": "LIMIT", "qty": 8, "notional": 3320, "limitPrice": 415, "state": "QUEUED", "clientIdemKey": "idem-ord-003", "alpacaOrderId": null, "pinnedSpreadBps": 32, "walletId": "wallet-block-022", "createdAt": "2026-08-03T05:45:00.000Z", "updatedAt": "2026-08-03T05:47:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-08-03T05:45:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "VALIDATED", "transitionedAt": "2026-08-03T05:46:00.000Z" },
+        { "fromState": "VALIDATED", "toState": "QUEUED", "transitionedAt": "2026-08-03T05:47:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_004", "side": "BUY", "symbol": "GOOGL", "endUserId": "user-nano-041", "clientId": "client_nanovest", "clientName": "Nanovest", "type": "LIMIT", "qty": 20, "notional": 3920, "limitPrice": 196, "state": "PARTIALLY_FILLED", "clientIdemKey": "idem-ord-004", "alpacaOrderId": "alpaca-ord-004", "pinnedSpreadBps": 35, "walletId": "wallet-nano-041", "createdAt": "2026-08-02T14:20:00.000Z", "updatedAt": "2026-08-02T14:37:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-08-02T14:20:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "OPEN_EXECUTING", "transitionedAt": "2026-08-02T14:25:00.000Z" },
+        { "fromState": "OPEN_EXECUTING", "toState": "PARTIALLY_FILLED", "transitionedAt": "2026-08-02T14:37:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_005", "side": "BUY", "symbol": "SPY", "endUserId": "user-acme-033", "clientId": "client_acme", "clientName": "Acme Capital", "type": "MARKET", "qty": 12, "notional": 7668, "limitPrice": null, "state": "OPEN_EXECUTING", "clientIdemKey": "idem-ord-005", "alpacaOrderId": "alpaca-ord-005", "pinnedSpreadBps": 24, "walletId": "wallet-acme-033", "createdAt": "2026-08-02T12:10:00.000Z", "updatedAt": "2026-08-02T12:14:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-08-02T12:10:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "OPEN_EXECUTING", "transitionedAt": "2026-08-02T12:14:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_006", "side": "BUY", "symbol": "AAPL", "endUserId": "user-block-057", "clientId": "client_blockprime", "clientName": "BlockPrime", "type": "MARKET", "qty": 15, "notional": 3375, "limitPrice": null, "state": "FILLED", "clientIdemKey": "idem-ord-006", "alpacaOrderId": "alpaca-ord-006", "pinnedSpreadBps": 30, "walletId": "wallet-block-057", "createdAt": "2026-08-01T16:40:00.000Z", "updatedAt": "2026-08-01T16:55:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-08-01T16:40:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "OPEN_EXECUTING", "transitionedAt": "2026-08-01T16:44:00.000Z" },
+        { "fromState": "OPEN_EXECUTING", "toState": "FILLED", "transitionedAt": "2026-08-01T16:55:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_007", "side": "BUY", "symbol": "TSLA", "endUserId": "user-nano-068", "clientId": "client_nanovest", "clientName": "Nanovest", "type": "LIMIT", "qty": 4, "notional": 1240, "limitPrice": 310, "state": "SUBMITTED", "clientIdemKey": "idem-ord-007", "alpacaOrderId": null, "pinnedSpreadBps": 35, "walletId": "wallet-nano-068", "createdAt": "2026-08-01T11:25:00.000Z", "updatedAt": "2026-08-01T11:25:00.000Z",
+      "stateTransitions": [{ "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-08-01T11:25:00.000Z" }]
+    },
+    {
+      "id": "ord_008", "side": "BUY", "symbol": "MSFT", "endUserId": "user-acme-071", "clientId": "client_acme", "clientName": "Acme Capital", "type": "LIMIT", "qty": 7, "notional": 2905, "limitPrice": 415, "state": "VALIDATED", "clientIdemKey": "idem-ord-008", "alpacaOrderId": null, "pinnedSpreadBps": 26, "walletId": "wallet-acme-071", "createdAt": "2026-07-31T15:05:00.000Z", "updatedAt": "2026-07-31T15:07:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-31T15:05:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "VALIDATED", "transitionedAt": "2026-07-31T15:07:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_009", "side": "BUY", "symbol": "GOOGL", "endUserId": "user-block-083", "clientId": "client_blockprime", "clientName": "BlockPrime", "type": "MARKET", "qty": 9, "notional": 1755, "limitPrice": null, "state": "MINTING", "clientIdemKey": "idem-ord-009", "alpacaOrderId": "alpaca-ord-009", "pinnedSpreadBps": 31, "walletId": "wallet-block-083", "createdAt": "2026-07-31T09:35:00.000Z", "updatedAt": "2026-07-31T09:52:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-31T09:35:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "FILLED", "transitionedAt": "2026-07-31T09:49:00.000Z" },
+        { "fromState": "FILLED", "toState": "MINTING", "transitionedAt": "2026-07-31T09:52:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_010", "side": "BUY", "symbol": "SPY", "endUserId": "user-nano-094", "clientId": "client_nanovest", "clientName": "Nanovest", "type": "LIMIT", "qty": 6, "notional": 3840, "limitPrice": 640, "state": "REJECTED", "clientIdemKey": "idem-ord-010", "alpacaOrderId": null, "pinnedSpreadBps": 35, "walletId": "wallet-nano-094", "createdAt": "2026-07-30T13:15:00.000Z", "updatedAt": "2026-07-30T13:17:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-30T13:15:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "REJECTED", "transitionedAt": "2026-07-30T13:17:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_011", "side": "BUY", "symbol": "AAPL", "endUserId": "user-acme-105", "clientId": "client_acme", "clientName": "Acme Capital", "type": "LIMIT", "qty": 11, "notional": 2475, "limitPrice": 225, "state": "CANCELLED", "clientIdemKey": "idem-ord-011", "alpacaOrderId": "alpaca-ord-011", "pinnedSpreadBps": 25, "walletId": "wallet-acme-105", "createdAt": "2026-07-30T08:50:00.000Z", "updatedAt": "2026-07-30T09:02:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-30T08:50:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "QUEUED", "transitionedAt": "2026-07-30T08:53:00.000Z" },
+        { "fromState": "QUEUED", "toState": "CANCELLED", "transitionedAt": "2026-07-30T09:02:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_012", "side": "BUY", "symbol": "TSLA", "endUserId": "user-block-116", "clientId": "client_blockprime", "clientName": "BlockPrime", "type": "LIMIT", "qty": 3, "notional": 930, "limitPrice": 310, "state": "EXPIRED", "clientIdemKey": "idem-ord-012", "alpacaOrderId": "alpaca-ord-012", "pinnedSpreadBps": 30, "walletId": "wallet-block-116", "createdAt": "2026-07-29T16:30:00.000Z", "updatedAt": "2026-07-29T20:00:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-29T16:30:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "OPEN_EXECUTING", "transitionedAt": "2026-07-29T16:36:00.000Z" },
+        { "fromState": "OPEN_EXECUTING", "toState": "EXPIRED", "transitionedAt": "2026-07-29T20:00:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_013", "side": "BUY", "symbol": "MSFT", "endUserId": "user-nano-127", "clientId": "client_nanovest", "clientName": "Nanovest", "type": "MARKET", "qty": 14, "notional": 5810, "limitPrice": null, "state": "MINT_FAILED", "clientIdemKey": "idem-ord-013", "alpacaOrderId": "alpaca-ord-013", "pinnedSpreadBps": 35, "walletId": "wallet-nano-127", "createdAt": "2026-07-29T10:10:00.000Z", "updatedAt": "2026-07-29T10:38:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-29T10:10:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "FILLED", "transitionedAt": "2026-07-29T10:31:00.000Z" },
+        { "fromState": "FILLED", "toState": "MINTING", "transitionedAt": "2026-07-29T10:34:00.000Z" },
+        { "fromState": "MINTING", "toState": "MINT_FAILED", "transitionedAt": "2026-07-29T10:38:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_014", "side": "BUY", "symbol": "GOOGL", "endUserId": "user-acme-138", "clientId": "client_acme", "clientName": "Acme Capital", "type": "LIMIT", "qty": 13, "notional": 2535, "limitPrice": 195, "state": "SETTLED", "clientIdemKey": "idem-ord-014", "alpacaOrderId": "alpaca-ord-014", "pinnedSpreadBps": 25, "walletId": "wallet-acme-138", "createdAt": "2026-07-28T14:45:00.000Z", "updatedAt": "2026-07-28T15:08:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-28T14:45:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "FILLED", "transitionedAt": "2026-07-28T15:01:00.000Z" },
+        { "fromState": "FILLED", "toState": "SETTLED", "transitionedAt": "2026-07-28T15:08:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_015", "side": "BUY", "symbol": "SPY", "endUserId": "user-block-149", "clientId": "client_blockprime", "clientName": "BlockPrime", "type": "MARKET", "qty": 18, "notional": 11484, "limitPrice": null, "state": "FILLED", "clientIdemKey": "idem-ord-015", "alpacaOrderId": "alpaca-ord-015", "pinnedSpreadBps": 30, "walletId": "wallet-block-149", "createdAt": "2026-07-27T12:20:00.000Z", "updatedAt": "2026-07-27T12:43:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-27T12:20:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "OPEN_EXECUTING", "transitionedAt": "2026-07-27T12:24:00.000Z" },
+        { "fromState": "OPEN_EXECUTING", "toState": "FILLED", "transitionedAt": "2026-07-27T12:43:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_016", "side": "BUY", "symbol": "AAPL", "endUserId": "user-nano-150", "clientId": "client_nanovest", "clientName": "Nanovest", "type": "LIMIT", "qty": 25, "notional": 5575, "limitPrice": 223, "state": "OPEN_EXECUTING", "clientIdemKey": "idem-ord-016", "alpacaOrderId": "alpaca-ord-016", "pinnedSpreadBps": 35, "walletId": "wallet-nano-150", "createdAt": "2026-07-26T09:40:00.000Z", "updatedAt": "2026-07-26T09:49:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-26T09:40:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "OPEN_EXECUTING", "transitionedAt": "2026-07-26T09:49:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_017", "side": "BUY", "symbol": "TSLA", "endUserId": "user-acme-161", "clientId": "client_acme", "clientName": "Acme Capital", "type": "MARKET", "qty": 6, "notional": 1860, "limitPrice": null, "state": "QUEUED", "clientIdemKey": "idem-ord-017", "alpacaOrderId": null, "pinnedSpreadBps": 25, "walletId": "wallet-acme-161", "createdAt": "2026-07-25T15:55:00.000Z", "updatedAt": "2026-07-25T15:58:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-25T15:55:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "QUEUED", "transitionedAt": "2026-07-25T15:58:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_018", "side": "BUY", "symbol": "MSFT", "endUserId": "user-block-172", "clientId": "client_blockprime", "clientName": "BlockPrime", "type": "LIMIT", "qty": 16, "notional": 6640, "limitPrice": 415, "state": "PARTIALLY_FILLED", "clientIdemKey": "idem-ord-018", "alpacaOrderId": "alpaca-ord-018", "pinnedSpreadBps": 30, "walletId": "wallet-block-172", "createdAt": "2026-07-24T11:30:00.000Z", "updatedAt": "2026-07-24T11:56:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-24T11:30:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "OPEN_EXECUTING", "transitionedAt": "2026-07-24T11:36:00.000Z" },
+        { "fromState": "OPEN_EXECUTING", "toState": "PARTIALLY_FILLED", "transitionedAt": "2026-07-24T11:56:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_019", "side": "BUY", "symbol": "GOOGL", "endUserId": "user-nano-183", "clientId": "client_nanovest", "clientName": "Nanovest", "type": "MARKET", "qty": 22, "notional": 4290, "limitPrice": null, "state": "SETTLED", "clientIdemKey": "idem-ord-019", "alpacaOrderId": "alpaca-ord-019", "pinnedSpreadBps": 35, "walletId": "wallet-nano-183", "createdAt": "2026-07-23T13:05:00.000Z", "updatedAt": "2026-07-23T13:37:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-23T13:05:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "FILLED", "transitionedAt": "2026-07-23T13:28:00.000Z" },
+        { "fromState": "FILLED", "toState": "SETTLED", "transitionedAt": "2026-07-23T13:37:00.000Z" }
+      ]
+    },
+    {
+      "id": "ord_020", "side": "BUY", "symbol": "SPY", "endUserId": "user-acme-194", "clientId": "client_acme", "clientName": "Acme Capital", "type": "LIMIT", "qty": 10, "notional": 6380, "limitPrice": 638, "state": "SETTLED", "clientIdemKey": "idem-ord-020", "alpacaOrderId": "alpaca-ord-020", "pinnedSpreadBps": 25, "walletId": "wallet-acme-194", "createdAt": "2026-07-22T08:25:00.000Z", "updatedAt": "2026-07-22T08:53:00.000Z",
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-22T08:25:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "FILLED", "transitionedAt": "2026-07-22T08:46:00.000Z" },
+        { "fromState": "FILLED", "toState": "SETTLED", "transitionedAt": "2026-07-22T08:53:00.000Z" }
+      ]
+    }
+  ],
+  "redemptions": [
+    {
+      "id": "red_001", "side": "SELL", "symbol": "AAPL", "endUserId": "user-nano-205", "clientId": "client_nanovest", "clientName": "Nanovest", "type": "MARKET", "qty": 9, "notional": 2025, "limitPrice": null, "state": "BURN_FAILED", "clientIdemKey": "idem-red-001", "alpacaOrderId": "alpaca-red-001", "pinnedSpreadBps": 35, "walletId": "wallet-nano-205", "createdAt": "2026-08-03T04:50:00.000Z", "updatedAt": "2026-08-03T05:18:00.000Z", "lockedQty": 9, "burnedQty": 0, "releasedQty": 0,
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-08-03T04:50:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "FILLED", "transitionedAt": "2026-08-03T05:08:00.000Z" },
+        { "fromState": "FILLED", "toState": "BURN_FAILED", "transitionedAt": "2026-08-03T05:18:00.000Z" }
+      ]
+    },
+    {
+      "id": "red_002", "side": "SELL", "symbol": "TSLA", "endUserId": "user-acme-216", "clientId": "client_acme", "clientName": "Acme Capital", "type": "LIMIT", "qty": 5, "notional": 1550, "limitPrice": 310, "state": "SETTLED", "clientIdemKey": "idem-red-002", "alpacaOrderId": "alpaca-red-002", "pinnedSpreadBps": 25, "walletId": "wallet-acme-216", "createdAt": "2026-08-02T10:15:00.000Z", "updatedAt": "2026-08-02T10:42:00.000Z", "lockedQty": 5, "burnedQty": 5, "releasedQty": 0,
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-08-02T10:15:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "FILLED", "transitionedAt": "2026-08-02T10:34:00.000Z" },
+        { "fromState": "FILLED", "toState": "SETTLED", "transitionedAt": "2026-08-02T10:42:00.000Z" }
+      ]
+    },
+    {
+      "id": "red_003", "side": "SELL", "symbol": "MSFT", "endUserId": "user-block-227", "clientId": "client_blockprime", "clientName": "BlockPrime", "type": "LIMIT", "qty": 7, "notional": 2905, "limitPrice": 415, "state": "OPEN_EXECUTING", "clientIdemKey": "idem-red-003", "alpacaOrderId": "alpaca-red-003", "pinnedSpreadBps": 30, "walletId": "wallet-block-227", "createdAt": "2026-07-31T12:40:00.000Z", "updatedAt": "2026-07-31T12:51:00.000Z", "lockedQty": 7, "burnedQty": 0, "releasedQty": 0,
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-31T12:40:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "OPEN_EXECUTING", "transitionedAt": "2026-07-31T12:51:00.000Z" }
+      ]
+    },
+    {
+      "id": "red_004", "side": "SELL", "symbol": "GOOGL", "endUserId": "user-nano-238", "clientId": "client_nanovest", "clientName": "Nanovest", "type": "MARKET", "qty": 11, "notional": 2145, "limitPrice": null, "state": "FILLED", "clientIdemKey": "idem-red-004", "alpacaOrderId": "alpaca-red-004", "pinnedSpreadBps": 35, "walletId": "wallet-nano-238", "createdAt": "2026-07-28T09:20:00.000Z", "updatedAt": "2026-07-28T09:46:00.000Z", "lockedQty": 11, "burnedQty": 0, "releasedQty": 0,
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-28T09:20:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "OPEN_EXECUTING", "transitionedAt": "2026-07-28T09:27:00.000Z" },
+        { "fromState": "OPEN_EXECUTING", "toState": "FILLED", "transitionedAt": "2026-07-28T09:46:00.000Z" }
+      ]
+    },
+    {
+      "id": "red_005", "side": "SELL", "symbol": "SPY", "endUserId": "user-acme-249", "clientId": "client_acme", "clientName": "Acme Capital", "type": "LIMIT", "qty": 8, "notional": 5104, "limitPrice": 638, "state": "CANCELLED", "clientIdemKey": "idem-red-005", "alpacaOrderId": "alpaca-red-005", "pinnedSpreadBps": 25, "walletId": "wallet-acme-249", "createdAt": "2026-07-25T10:05:00.000Z", "updatedAt": "2026-07-25T10:16:00.000Z", "lockedQty": 8, "burnedQty": 0, "releasedQty": 8,
+      "stateTransitions": [
+        { "fromState": null, "toState": "SUBMITTED", "transitionedAt": "2026-07-25T10:05:00.000Z" },
+        { "fromState": "SUBMITTED", "toState": "QUEUED", "transitionedAt": "2026-07-25T10:08:00.000Z" },
+        { "fromState": "QUEUED", "toState": "CANCELLED", "transitionedAt": "2026-07-25T10:16:00.000Z" }
+      ]
+    }
+  ],
+  "orderDetails": {},
+  "redemptionDetails": {},
+  "fills": {
+    "ord_001": [
+      { "fillId": "fill_001_a", "qty": 10, "price": 224.5, "cost": 2245, "filledAt": "2026-08-03T07:32:00.000Z", "mintTxHash": "0xmint001", "onChainStatus": "FAILED", "retryCount": 2 }
+    ],
+    "ord_002": [
+      { "fillId": "fill_002_a", "qty": 5, "price": 307.5, "cost": 1537.5, "filledAt": "2026-08-03T06:42:00.000Z", "mintTxHash": "0xmint002", "onChainStatus": "CONFIRMED", "retryCount": 0 }
+    ],
+    "ord_004": [
+      { "fillId": "fill_004_a", "qty": 6, "price": 195.2, "cost": 1171.2, "filledAt": "2026-08-02T14:31:00.000Z", "onChainStatus": "PENDING", "retryCount": 0 },
+      { "fillId": "fill_004_b", "qty": 4, "price": 195.4, "cost": 781.6, "filledAt": "2026-08-02T14:37:00.000Z", "onChainStatus": "PENDING", "retryCount": 0 }
+    ],
+    "ord_006": [
+      { "fillId": "fill_006_a", "qty": 15, "price": 224.7, "cost": 3370.5, "filledAt": "2026-08-01T16:55:00.000Z", "onChainStatus": "PENDING", "retryCount": 0 }
+    ],
+    "red_001": [
+      { "fillId": "fill_red_001_a", "qty": 9, "price": 224.8, "cost": 2023.2, "filledAt": "2026-08-03T05:08:00.000Z", "burnTxHash": "0xburn001", "onChainStatus": "FAILED", "retryCount": 1 }
+    ],
+    "red_002": [
+      { "fillId": "fill_red_002_a", "qty": 5, "price": 309.6, "cost": 1548, "filledAt": "2026-08-02T10:34:00.000Z", "burnTxHash": "0xburn002", "onChainStatus": "CONFIRMED", "retryCount": 0 }
+    ]
+  }
+}

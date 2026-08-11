@@ -1,0 +1,58 @@
+{
+  "activeCashScenario": "balanced",
+  "cashScenarios": {
+    "balanced": {
+      "usdtLedgerTotal": 80700,
+      "usdtWalletBalance": 80700,
+      "usdtDelta": 0,
+      "usdFloatAtAlpaca": 45000,
+      "projectedFloatRequirement": 42000,
+      "lastRunAt": "2026-08-03T14:30:00Z"
+    },
+    "unbalanced": {
+      "usdtLedgerTotal": 80700,
+      "usdtWalletBalance": 80650,
+      "usdtDelta": -50,
+      "usdFloatAtAlpaca": 45000,
+      "projectedFloatRequirement": 42000,
+      "lastRunAt": "2026-08-03T14:30:00Z"
+    }
+  },
+  "supply": [
+    {
+      "symbol": "AAPL",
+      "onChainSupply": 1234.56789,
+      "alpacaPositionSum": 1234.56789,
+      "residual": 0,
+      "symbolStatus": "ACTIVE"
+    },
+    {
+      "symbol": "TSLA",
+      "onChainSupply": 567.123456,
+      "alpacaPositionSum": 567.1234,
+      "residual": 0.000056,
+      "symbolStatus": "MINT_HALTED"
+    },
+    {
+      "symbol": "MSFT",
+      "onChainSupply": 890,
+      "alpacaPositionSum": 890,
+      "residual": 0,
+      "symbolStatus": "ACTIVE"
+    },
+    {
+      "symbol": "GOOGL",
+      "onChainSupply": 234.5,
+      "alpacaPositionSum": 234.5,
+      "residual": 0,
+      "symbolStatus": "ACTIVE"
+    },
+    {
+      "symbol": "SPY",
+      "onChainSupply": 2100,
+      "alpacaPositionSum": 2100,
+      "residual": 0,
+      "symbolStatus": "ACTIVE"
+    }
+  ]
+}

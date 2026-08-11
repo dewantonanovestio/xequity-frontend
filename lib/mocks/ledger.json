@@ -1,0 +1,456 @@
+{
+  "balances": [
+    {
+      "clientId": "client_nanovest",
+      "clientName": "Nanovest",
+      "available": 50000,
+      "held": 12000,
+      "total": 62000
+    },
+    {
+      "clientId": "client_acme",
+      "clientName": "Acme Capital",
+      "available": 8500,
+      "held": 4200,
+      "total": 12700
+    },
+    {
+      "clientId": "client_blockprime",
+      "clientName": "BlockPrime",
+      "available": 4000,
+      "held": 2000,
+      "total": 6000
+    }
+  ],
+  "systemBalances": [
+    { "accountType": "USDT_WALLET", "normalSide": "DEBIT", "balance": "125000.000000" },
+    { "accountType": "ALPACA_USD_FLOAT", "normalSide": "DEBIT", "balance": "98000.000000" },
+    { "accountType": "TREASURY_OWN_FUNDS", "normalSide": "CREDIT", "balance": "15000.000000" },
+    { "accountType": "NET_SETTLEMENT_PAYABLE", "normalSide": "CREDIT", "balance": "4200.000000" },
+    { "accountType": "PENDING_T1_SETTLEMENT", "normalSide": "DEBIT", "balance": "6100.000000" },
+    { "accountType": "XEQUITY_SPREAD_REVENUE", "normalSide": "CREDIT", "balance": "1320.000000" },
+    { "accountType": "GAS_EXPENSE", "normalSide": "DEBIT", "balance": "87.500000" },
+    { "accountType": "CONVERSION_COST", "normalSide": "DEBIT", "balance": "640.000000" },
+    { "accountType": "REGULATORY_FEE_EXPENSE", "normalSide": "DEBIT", "balance": "210.750000" }
+  ],
+  "transactions": [
+    {
+      "id": "txn_001",
+      "timestamp": "2026-08-03T14:42:00.000Z",
+      "clientId": "client_nanovest",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "DEPOSIT",
+      "debit": 0,
+      "credit": 25000,
+      "referenceId": null,
+      "description": "Treasury wallet top-up"
+    },
+    {
+      "id": "txn_002",
+      "timestamp": "2026-08-03T09:18:00.000Z",
+      "clientId": null,
+      "accountType": "XEQUITY_SPREAD_REVENUE",
+      "sourceType": "FILL",
+      "debit": 0,
+      "credit": 42,
+      "referenceId": "ord_019",
+      "description": "Execution spread booked for GOOGL buy"
+    },
+    {
+      "id": "txn_003",
+      "timestamp": "2026-08-02T16:05:00.000Z",
+      "clientId": "client_nanovest",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "FILL",
+      "debit": 4800,
+      "credit": 0,
+      "referenceId": "ord_001",
+      "description": "Settled AAPL purchase debit"
+    },
+    {
+      "id": "txn_004",
+      "timestamp": "2026-08-02T10:22:00.000Z",
+      "clientId": "client_nanovest",
+      "accountType": "CLIENT_HOLD",
+      "sourceType": "HOLD",
+      "debit": 5000,
+      "credit": 0,
+      "referenceId": "ord_016",
+      "description": "Reserved funds for AAPL limit order"
+    },
+    {
+      "id": "txn_005",
+      "timestamp": "2026-08-01T18:30:00.000Z",
+      "clientId": "client_nanovest",
+      "accountType": "CLIENT_HOLD",
+      "sourceType": "HOLD_RELEASE",
+      "debit": 0,
+      "credit": 200,
+      "referenceId": "ord_004",
+      "description": "Released unused partial-fill reserve"
+    },
+    {
+      "id": "txn_006",
+      "timestamp": "2026-08-01T08:11:00.000Z",
+      "clientId": "client_nanovest",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "DIVIDEND",
+      "debit": 0,
+      "credit": 310,
+      "referenceId": null,
+      "description": "Monthly equity dividend distribution"
+    },
+    {
+      "id": "txn_007",
+      "timestamp": "2026-07-31T15:45:00.000Z",
+      "clientId": "client_nanovest",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "REDEMPTION_FILL",
+      "debit": 0,
+      "credit": 7200,
+      "referenceId": "red_004",
+      "description": "GOOGL redemption proceeds credited"
+    },
+    {
+      "id": "txn_008",
+      "timestamp": "2026-07-31T07:20:00.000Z",
+      "clientId": null,
+      "accountType": "CONVERSION_COST",
+      "sourceType": "CONVERSION",
+      "debit": 125,
+      "credit": 0,
+      "referenceId": null,
+      "description": "USDT to USD treasury conversion fee"
+    },
+    {
+      "id": "txn_009",
+      "timestamp": "2026-07-30T13:10:00.000Z",
+      "clientId": "client_nanovest",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "WITHDRAWAL",
+      "debit": 6000,
+      "credit": 0,
+      "referenceId": null,
+      "description": "Client treasury withdrawal"
+    },
+    {
+      "id": "txn_010",
+      "timestamp": "2026-07-29T11:35:00.000Z",
+      "clientId": "client_nanovest",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "FILL",
+      "debit": 3400,
+      "credit": 0,
+      "referenceId": "ord_013",
+      "description": "MSFT purchase settlement debit"
+    },
+    {
+      "id": "txn_011",
+      "timestamp": "2026-07-28T16:40:00.000Z",
+      "clientId": "client_nanovest",
+      "accountType": "CLIENT_HOLD",
+      "sourceType": "HOLD",
+      "debit": 3500,
+      "credit": 0,
+      "referenceId": "ord_007",
+      "description": "Reserved funds for TSLA market order"
+    },
+    {
+      "id": "txn_012",
+      "timestamp": "2026-07-28T08:00:00.000Z",
+      "clientId": "client_nanovest",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "DEPOSIT",
+      "debit": 0,
+      "credit": 52073,
+      "referenceId": null,
+      "description": "Opening treasury deposit"
+    },
+    {
+      "id": "txn_013",
+      "timestamp": "2026-08-03T12:16:00.000Z",
+      "clientId": null,
+      "accountType": "XEQUITY_SPREAD_REVENUE",
+      "sourceType": "FILL",
+      "debit": 0,
+      "credit": 25,
+      "referenceId": "ord_020",
+      "description": "Execution spread booked for SPY buy"
+    },
+    {
+      "id": "txn_014",
+      "timestamp": "2026-08-02T17:25:00.000Z",
+      "clientId": "client_acme",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "REDEMPTION_FILL",
+      "debit": 0,
+      "credit": 5000,
+      "referenceId": "red_002",
+      "description": "TSLA redemption proceeds credited"
+    },
+    {
+      "id": "txn_015",
+      "timestamp": "2026-08-02T09:05:00.000Z",
+      "clientId": null,
+      "accountType": "XEQUITY_SPREAD_REVENUE",
+      "sourceType": "FILL",
+      "debit": 0,
+      "credit": 25,
+      "referenceId": "ord_014",
+      "description": "Execution spread booked for GOOGL buy"
+    },
+    {
+      "id": "txn_016",
+      "timestamp": "2026-08-01T14:55:00.000Z",
+      "clientId": "client_acme",
+      "accountType": "CLIENT_HOLD",
+      "sourceType": "HOLD",
+      "debit": 4200,
+      "credit": 0,
+      "referenceId": "ord_017",
+      "description": "Reserved funds for TSLA limit order"
+    },
+    {
+      "id": "txn_017",
+      "timestamp": "2026-08-01T06:30:00.000Z",
+      "clientId": "client_acme",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "DIVIDEND",
+      "debit": 0,
+      "credit": 150,
+      "referenceId": null,
+      "description": "Quarterly ETF dividend distribution"
+    },
+    {
+      "id": "txn_018",
+      "timestamp": "2026-07-31T19:10:00.000Z",
+      "clientId": null,
+      "accountType": "CONVERSION_COST",
+      "sourceType": "CONVERSION",
+      "debit": 300,
+      "credit": 0,
+      "referenceId": null,
+      "description": "USD settlement conversion adjustment"
+    },
+    {
+      "id": "txn_019",
+      "timestamp": "2026-07-31T10:00:00.000Z",
+      "clientId": "client_acme",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "WITHDRAWAL",
+      "debit": 5000,
+      "credit": 0,
+      "referenceId": null,
+      "description": "Client treasury withdrawal"
+    },
+    {
+      "id": "txn_020",
+      "timestamp": "2026-07-30T16:35:00.000Z",
+      "clientId": "client_acme",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "REDEMPTION_FILL",
+      "debit": 0,
+      "credit": 9000,
+      "referenceId": "red_005",
+      "description": "SPY redemption proceeds credited"
+    },
+    {
+      "id": "txn_021",
+      "timestamp": "2026-07-30T08:44:00.000Z",
+      "clientId": "client_acme",
+      "accountType": "CLIENT_HOLD",
+      "sourceType": "HOLD_RELEASE",
+      "debit": 0,
+      "credit": 500,
+      "referenceId": "ord_008",
+      "description": "Released unused MSFT order reserve"
+    },
+    {
+      "id": "txn_022",
+      "timestamp": "2026-07-29T17:15:00.000Z",
+      "clientId": "client_acme",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "FILL",
+      "debit": 6000,
+      "credit": 0,
+      "referenceId": "ord_005",
+      "description": "SPY purchase settlement debit"
+    },
+    {
+      "id": "txn_023",
+      "timestamp": "2026-07-29T09:20:00.000Z",
+      "clientId": "client_acme",
+      "accountType": "CLIENT_HOLD",
+      "sourceType": "HOLD",
+      "debit": 6500,
+      "credit": 0,
+      "referenceId": "ord_005",
+      "description": "Reserved funds for SPY market order"
+    },
+    {
+      "id": "txn_024",
+      "timestamp": "2026-07-28T07:30:00.000Z",
+      "clientId": "client_acme",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "DEPOSIT",
+      "debit": 0,
+      "credit": 20000,
+      "referenceId": null,
+      "description": "Opening treasury deposit"
+    },
+    {
+      "id": "txn_025",
+      "timestamp": "2026-08-03T11:05:00.000Z",
+      "clientId": null,
+      "accountType": "XEQUITY_SPREAD_REVENUE",
+      "sourceType": "FILL",
+      "debit": 0,
+      "credit": 50,
+      "referenceId": "ord_015",
+      "description": "Execution spread booked for SPY buy"
+    },
+    {
+      "id": "txn_026",
+      "timestamp": "2026-08-02T15:12:00.000Z",
+      "clientId": "client_blockprime",
+      "accountType": "CLIENT_HOLD",
+      "sourceType": "HOLD_RELEASE",
+      "debit": 0,
+      "credit": 150,
+      "referenceId": "ord_018",
+      "description": "Released unused MSFT order reserve"
+    },
+    {
+      "id": "txn_027",
+      "timestamp": "2026-08-02T08:25:00.000Z",
+      "clientId": "client_blockprime",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "FILL",
+      "debit": 900,
+      "credit": 0,
+      "referenceId": "ord_006",
+      "description": "AAPL purchase settlement debit"
+    },
+    {
+      "id": "txn_028",
+      "timestamp": "2026-08-01T13:48:00.000Z",
+      "clientId": "client_blockprime",
+      "accountType": "CLIENT_HOLD",
+      "sourceType": "HOLD",
+      "debit": 2000,
+      "credit": 0,
+      "referenceId": "ord_018",
+      "description": "Reserved funds for MSFT limit order"
+    },
+    {
+      "id": "txn_029",
+      "timestamp": "2026-08-01T05:55:00.000Z",
+      "clientId": "client_blockprime",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "DIVIDEND",
+      "debit": 0,
+      "credit": 100,
+      "referenceId": null,
+      "description": "Monthly equity dividend distribution"
+    },
+    {
+      "id": "txn_030",
+      "timestamp": "2026-07-31T17:40:00.000Z",
+      "clientId": null,
+      "accountType": "CONVERSION_COST",
+      "sourceType": "CONVERSION",
+      "debit": 215,
+      "credit": 0,
+      "referenceId": null,
+      "description": "USDT to USD settlement conversion"
+    },
+    {
+      "id": "txn_031",
+      "timestamp": "2026-07-31T09:12:00.000Z",
+      "clientId": "client_blockprime",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "REDEMPTION_FILL",
+      "debit": 0,
+      "credit": 1500,
+      "referenceId": "red_003",
+      "description": "MSFT redemption proceeds credited"
+    },
+    {
+      "id": "txn_032",
+      "timestamp": "2026-07-30T14:26:00.000Z",
+      "clientId": "client_blockprime",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "WITHDRAWAL",
+      "debit": 3000,
+      "credit": 0,
+      "referenceId": null,
+      "description": "Client treasury withdrawal"
+    },
+    {
+      "id": "txn_033",
+      "timestamp": "2026-07-30T07:50:00.000Z",
+      "clientId": null,
+      "accountType": "XEQUITY_SPREAD_REVENUE",
+      "sourceType": "FILL",
+      "debit": 0,
+      "credit": 15,
+      "referenceId": "ord_009",
+      "description": "Execution spread booked for GOOGL buy"
+    },
+    {
+      "id": "txn_034",
+      "timestamp": "2026-07-29T15:05:00.000Z",
+      "clientId": "client_blockprime",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "FILL",
+      "debit": 2200,
+      "credit": 0,
+      "referenceId": "ord_006",
+      "description": "AAPL purchase settlement debit"
+    },
+    {
+      "id": "txn_035",
+      "timestamp": "2026-07-29T08:15:00.000Z",
+      "clientId": "client_blockprime",
+      "accountType": "CLIENT_HOLD",
+      "sourceType": "HOLD",
+      "debit": 2500,
+      "credit": 0,
+      "referenceId": "ord_003",
+      "description": "Reserved funds for MSFT market order"
+    },
+    {
+      "id": "txn_036",
+      "timestamp": "2026-07-28T06:45:00.000Z",
+      "clientId": "client_blockprime",
+      "accountType": "CLIENT_AVAILABLE",
+      "sourceType": "DEPOSIT",
+      "debit": 0,
+      "credit": 15000,
+      "referenceId": null,
+      "description": "Opening treasury deposit"
+    },
+    {
+      "id": "txn_037",
+      "timestamp": "2026-08-03T10:30:00.000Z",
+      "clientId": null,
+      "accountType": "REGULATORY_FEE_EXPENSE",
+      "sourceType": "REGULATORY_FEE",
+      "debit": 12.50,
+      "credit": 0,
+      "referenceId": "ord_019",
+      "description": "SEC regulatory fee on GOOGL sell"
+    },
+    {
+      "id": "txn_038",
+      "timestamp": "2026-08-02T14:00:00.000Z",
+      "clientId": null,
+      "accountType": "GAS_EXPENSE",
+      "sourceType": "GAS",
+      "debit": 8.75,
+      "credit": 0,
+      "referenceId": "ord_001",
+      "description": "On-chain gas fee for AAPL mint"
+    }
+  ]
+}
