@@ -76,7 +76,8 @@ function SymbolStatusSelect({ ticker, currentStatus }: { ticker: string; current
   const [updateStatus, { isLoading }] = useUpdateSymbolStatusMutation();
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = async (value: string) => {
+  const handleChange = async (value: string | null) => {
+    if (!value) return;
     setError(null);
     try {
       await updateStatus({ ticker, status: value as SymbolStatus }).unwrap();
