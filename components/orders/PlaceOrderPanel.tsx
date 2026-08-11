@@ -53,7 +53,7 @@ export function PlaceOrderPanel({
       </CardHeader>
 
       {isOpen ? (
-        <CardContent className="max-w-2xl">
+        <CardContent>
           <Suspense fallback={<Skeleton className="h-96 w-full rounded-lg" />}>
             <ClientOrderForm
               symbol={symbol}

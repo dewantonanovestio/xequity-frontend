@@ -152,8 +152,8 @@ export function ClientOrdersView({ clientId }: ClientOrdersViewProps) {
       </header>
 
       {/* Chart + Order panel side by side */}
-      <div className="grid gap-5 lg:grid-cols-[1fr_400px]">
-        <div className="min-h-[500px] overflow-hidden rounded-xl border bg-card shadow-sm">
+      <div className="grid gap-5 lg:grid-cols-[1fr_360px]">
+        <div className="min-h-[320px] overflow-hidden rounded-xl border bg-card shadow-sm">
           <TradingViewChart symbol={chartSymbol} />
         </div>
         <div className="grid gap-5 content-start">

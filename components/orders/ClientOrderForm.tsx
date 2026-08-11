@@ -18,7 +18,9 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePlaceOrderMutation, usePlaceRedemptionMutation } from "@/lib/api/ordersApi";
+import { useGetHoldingsQuery, useGetPricingQuery } from "@/lib/api/portfolioApi";
 import { useGetEndUsersQuery, useGetSymbolsQuery } from "@/lib/api/userApi";
+import { formatCurrency, formatQty } from "@/lib/utils/formatters";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { selectEndUser, selectSelectedEndUser } from "@/lib/store/viewModeSlice";
 import { generateIdemKey, validateTradeForm } from "@/lib/trade/tradeUtils";
@@ -50,6 +52,55 @@ function SymbolDetail({ meta }: { meta: SymbolMeta }) {
       <span>{meta.fractionable ? "Yes" : "No"}</span>
       <span className="text-muted-foreground">Extended hours</span>
       <span>{meta.tradableOvernight ? "Supported" : "Not supported"}</span>
+    </div>
+  );
+}
+
+function EndUserHoldingCard({
+  endUserId,
+  clientId,
+  symbol,
+}: {
+  endUserId: string;
+  clientId: string;
+  symbol: string;
+}) {
+  const holdingsQuery = useGetHoldingsQuery(endUserId, { skip: !endUserId });
+  const pricingQuery = useGetPricingQuery(
+    { symbol, clientId },
+    { skip: !symbol || !clientId },
+  );
+
+  const holding = holdingsQuery.data?.find((h) => h.symbol === symbol);
+  const price = pricingQuery.data?.sellPrice;
+  const marketValue = holding && price !== undefined ? holding.qty * price : null;
+
+  if (!endUserId || !symbol) return null;
+  if (holdingsQuery.isLoading || pricingQuery.isLoading) return null;
+  if (!holding) return (
+    <div className="rounded-lg border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+      No position in {symbol}
+    </div>
+  );
+
+  return (
+    <div className="rounded-lg border bg-muted/30 px-3 py-2 grid grid-cols-4 gap-x-3 text-xs">
+      <div>
+        <p className="text-muted-foreground">Qty</p>
+        <p className="font-medium tabular-nums">{formatQty(holding.qty)}</p>
+      </div>
+      <div>
+        <p className="text-muted-foreground">Avg cost</p>
+        <p className="tabular-nums">{formatCurrency(holding.avgCost)}</p>
+      </div>
+      <div>
+        <p className="text-muted-foreground">Price</p>
+        <p className="tabular-nums">{price !== undefined ? formatCurrency(price) : "—"}</p>
+      </div>
+      <div>
+        <p className="text-muted-foreground">Value</p>
+        <p className="font-medium tabular-nums">{marketValue !== null ? formatCurrency(marketValue) : "—"}</p>
+      </div>
     </div>
   );
 }
@@ -217,34 +268,52 @@ export function ClientOrderForm({
     : null;
 
   return (
-    <form className="grid gap-5" onSubmit={submit}>
-      {/* End-user selector */}
-      <div className="grid gap-1.5">
-        <label className="text-sm font-medium" htmlFor="client-order-end-user">
-          End-user
-        </label>
-        <Select
-          value={selectedEndUserId || ""}
-          onValueChange={handleUserChange}
-          disabled={endUsersQuery.isLoading}
-        >
-          <SelectTrigger id="client-order-end-user">
-            <SelectValue>
-              {endUserDisplayName ??
-                (endUsersQuery.isLoading ? "Loading…" : "Select end-user")}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {(endUsersQuery.data ?? []).map((user) => (
-              <SelectItem key={user.endUserId} value={user.endUserId}>
-                {user.externalId !== user.displayName
-                  ? `${user.externalId} — ${user.displayName}`
-                  : user.externalId}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <form className="grid gap-3" onSubmit={submit}>
+      {/* End-user + Symbol row */}
+      <div className="grid grid-cols-2 gap-2 min-w-0">
+        <div className="grid gap-1 min-w-0">
+          <label className="text-xs font-medium text-muted-foreground" htmlFor="client-order-end-user">
+            End-user
+          </label>
+          <Select
+            value={selectedEndUserId || ""}
+            onValueChange={handleUserChange}
+            disabled={endUsersQuery.isLoading}
+          >
+            <SelectTrigger id="client-order-end-user" className="w-full overflow-hidden">
+              <SelectValue>
+                <span className="truncate block">
+                  {endUserDisplayName ??
+                    (endUsersQuery.isLoading ? "Loading…" : "Select end-user")}
+                </span>
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {(endUsersQuery.data ?? []).map((user) => (
+                <SelectItem key={user.endUserId} value={user.endUserId}>
+                  {user.externalId !== user.displayName
+                    ? `${user.externalId} — ${user.displayName}`
+                    : user.externalId}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <SymbolSelect
+          symbols={symbolsQuery.data ?? []}
+          value={symbol}
+          onChange={handleSymbolChange}
+        />
       </div>
+
+      {/* End-user position for selected symbol */}
+      {selectedEndUserId && symbol ? (
+        <EndUserHoldingCard
+          endUserId={selectedEndUserId}
+          clientId={clientId}
+          symbol={symbol}
+        />
+      ) : null}
 
       {/* Side toggle */}
       <Tabs value={side} onValueChange={(v) => handleSideChange(v as "BUY" | "SELL")}>
@@ -254,35 +323,24 @@ export function ClientOrderForm({
         </TabsList>
       </Tabs>
 
-      {/* Symbol */}
-      <SymbolSelect
-        symbols={symbolsQuery.data ?? []}
-        value={symbol}
-        onChange={handleSymbolChange}
-      />
-
-      {/* Symbol capabilities */}
-      {selectedSymbol ? <SymbolDetail meta={selectedSymbol} /> : null}
-
-      {/* Order type */}
-      <OrderTypeToggle
-        value={type}
-        onChange={setType}
-        disabled={extendedHours}
-      />
-
-      {/* Extended hours */}
-      <ExtendedHoursToggle
-        checked={extendedHours}
-        onChange={handleExtendedHoursChange}
-        disabled={extendedHoursDisabled}
-        showOvernightWarning={extendedHoursDisabled}
-      />
+      {/* Order type + Extended hours row */}
+      <div className="grid grid-cols-2 gap-2 items-end">
+        <OrderTypeToggle
+          value={type}
+          onChange={setType}
+          disabled={extendedHours}
+        />
+        <ExtendedHoursToggle
+          checked={extendedHours}
+          onChange={handleExtendedHoursChange}
+          disabled={extendedHoursDisabled}
+          showOvernightWarning={extendedHoursDisabled}
+        />
+      </div>
 
       {/* Amount input */}
       {isSell ? (
-        /* Sell: qty only, no notional toggle */
-        <div className="grid gap-1.5">
+        <div className="grid gap-1">
           <label htmlFor="trade-amount" className="text-xs font-medium text-muted-foreground">
             Quantity
           </label>
@@ -299,9 +357,8 @@ export function ClientOrderForm({
           />
         </div>
       ) : (
-        /* Buy: qty or notional toggle */
-        <div className="grid gap-1.5">
-          <div className="flex items-center justify-between gap-3">
+        <div className="grid gap-1">
+          <div className="flex items-center justify-between">
             <label htmlFor="trade-amount" className="text-xs font-medium text-muted-foreground">
               {inputMode === "qty" ? "Quantity" : "Dollar amount"}
             </label>
@@ -334,9 +391,9 @@ export function ClientOrderForm({
         </div>
       )}
 
-      {/* Price inputs: BUY MARKET → collar only; BUY LIMIT → limit only; SELL → nothing */}
+      {/* Price inputs */}
       {!isSell && type === "MARKET" ? (
-        <label className="grid gap-1.5 text-xs font-medium text-muted-foreground">
+        <label className="grid gap-1 text-xs font-medium text-muted-foreground">
           Collar price (optional)
           <Input
             aria-label="Collar price"
@@ -351,7 +408,7 @@ export function ClientOrderForm({
         </label>
       ) : null}
       {type === "LIMIT" ? (
-        <label className="grid gap-1.5 text-xs font-medium text-muted-foreground">
+        <label className="grid gap-1 text-xs font-medium text-muted-foreground">
           Limit price
           <Input
             aria-label="Limit price"
@@ -367,7 +424,7 @@ export function ClientOrderForm({
       ) : null}
 
       {/* TIF: DAY and GTC only */}
-      <label className="grid gap-1.5 text-xs font-medium text-muted-foreground">
+      <label className="grid gap-1 text-xs font-medium text-muted-foreground">
         Time in force
         <Select
           modal={false}
@@ -404,8 +461,8 @@ export function ClientOrderForm({
           role={message.tone === "error" ? "alert" : "status"}
           className={
             message.tone === "success"
-              ? "text-sm text-emerald-600"
-              : "text-sm text-destructive"
+              ? "text-xs text-emerald-600"
+              : "text-xs text-destructive"
           }
         >
           {message.text}
@@ -414,7 +471,6 @@ export function ClientOrderForm({
 
       <Button
         type="submit"
-        size="lg"
         disabled={
           !selectedUser ||
           Boolean(validationError) ||
