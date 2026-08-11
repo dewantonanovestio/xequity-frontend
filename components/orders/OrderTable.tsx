@@ -147,7 +147,6 @@ export function OrderTable({
         {actionsRef.current?.(row.original) ?? null}
       </div>
     ),
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }), []);
 
   const visibleColumns = hiddenColumns?.size

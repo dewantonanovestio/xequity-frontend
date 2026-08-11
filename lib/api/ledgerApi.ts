@@ -1,5 +1,6 @@
 import { baseApi } from "@/lib/api/baseApi";
 import { adaptBalances, adaptSystemBalances, adaptTransactionPage } from "@/lib/api/adapters";
+import { isMockMode } from "@/lib/utils/env";
 import type {
   ClientBalance,
   PaginatedTransactions,
@@ -21,6 +22,7 @@ const BACKEND_TRANSACTION_TYPES = new Set([
 ]);
 
 function normalizeBackendParam(key: string, value: unknown) {
+  if (isMockMode()) return value;
   if (key === "sortBy") return "createdAt";
   if (key === "sortDirection" && typeof value === "string") {
     return value.toUpperCase();

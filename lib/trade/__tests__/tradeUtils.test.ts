@@ -10,6 +10,8 @@ import type { EndUser } from '@/lib/types/user';
 const user: EndUser = {
   endUserId: 'user-1', clientId: 'client-1', externalId: 'external-1',
   walletId: 'wallet-1', displayName: 'User One',
+  subAccountId: null, state: 'ACTIVE',
+  createdAt: '2026-08-01T00:00:00.000Z', updatedAt: '2026-08-01T00:00:00.000Z',
 };
 
 describe('tradeUtils', () => {
@@ -22,7 +24,7 @@ describe('tradeUtils', () => {
   it('builds a market quantity request using user context', () => {
     expect(buildPlaceOrderRequest({ symbol: 'AAPL', side: 'BUY', type: 'MARKET', qty: '10', tif: 'DAY' }, user)).toEqual({
       symbol: 'AAPL', side: 'BUY', type: 'MARKET', qty: '10', tif: 'DAY',
-      clientId: 'client-1', endUserId: 'user-1', walletId: 'wallet-1',
+      clientId: 'client-1', endUserId: 'user-1',
       clientIdemKey: '00000000-0000-4000-8000-000000000001',
     });
   });

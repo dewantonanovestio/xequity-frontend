@@ -11,12 +11,12 @@ describe("transaction filter parameters", () => {
     expect(
       writeTransactionFilters({
         clientId: "client_acme",
-        type: "BUY_DEBIT",
+        type: "FILL",
         fromDate: "2026-07-29",
         toDate: "2026-08-03",
       }),
     ).toBe(
-      "clientId=client_acme&type=BUY_DEBIT&fromDate=2026-07-29&toDate=2026-08-03",
+      "clientId=client_acme&type=FILL&fromDate=2026-07-29&toDate=2026-08-03",
     );
   });
 
@@ -24,9 +24,9 @@ describe("transaction filter parameters", () => {
     expect(
       writeTransactionFilters({
         ...EMPTY_TRANSACTION_FILTERS,
-        type: "BUY_DEBIT",
+        type: "FILL",
       }),
-    ).toBe("type=BUY_DEBIT");
+    ).toBe("type=FILL");
     expect(writeTransactionFilters(EMPTY_TRANSACTION_FILTERS)).toBe("");
   });
 

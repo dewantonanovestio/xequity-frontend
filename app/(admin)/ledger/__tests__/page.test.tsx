@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import LedgerPage from "@/app/(admin)/ledger/page";
+import LedgerPage from "@/app/admin/ledger/page";
 import type {
   ClientBalance,
   PaginatedTransactions,
@@ -12,7 +12,9 @@ const mocks = vi.hoisted(() => ({
   replace: vi.fn(),
   search: { value: "" },
   useGetBalancesQuery: vi.fn(),
+  useGetSystemBalancesQuery: vi.fn(),
   useGetTransactionsQuery: vi.fn(),
+  useGetClientsQuery: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -22,7 +24,12 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/lib/api/ledgerApi", () => ({
   useGetBalancesQuery: mocks.useGetBalancesQuery,
+  useGetSystemBalancesQuery: mocks.useGetSystemBalancesQuery,
   useGetTransactionsQuery: mocks.useGetTransactionsQuery,
+}));
+
+vi.mock("@/lib/api/clientApi", () => ({
+  useGetClientsQuery: mocks.useGetClientsQuery,
 }));
 
 const balances: ClientBalance[] = [
@@ -41,11 +48,10 @@ const transactionPage: PaginatedTransactions = {
       id: "txn_001",
       timestamp: "2026-08-03T14:42:00.000Z",
       clientId: "client_nanovest",
-      clientName: "Nanovest",
-      endUserId: null,
-      type: "DEPOSIT",
-      amount: 25000,
-      runningBalance: 62000,
+      accountType: "CLIENT_AVAILABLE",
+      sourceType: "DEPOSIT",
+      debit: 0,
+      credit: 25000,
       referenceId: null,
       description: "Treasury wallet top-up",
     },
@@ -67,6 +73,16 @@ beforeEach(() => {
     isLoading: false,
     isError: false,
   });
+  mocks.useGetSystemBalancesQuery.mockReset().mockReturnValue({
+    data: [],
+    isLoading: false,
+    isError: false,
+  });
+  mocks.useGetClientsQuery.mockReset().mockReturnValue({
+    data: [{ id: "client_acme", legalName: "Acme Capital" }],
+    isLoading: false,
+    isError: false,
+  });
 });
 
 describe("LedgerPage", () => {
@@ -83,18 +99,18 @@ describe("LedgerPage", () => {
     });
     expect(screen.getByRole("heading", { name: "Ledger Viewer" })).toBeInTheDocument();
     expect(screen.getByText("Client Balances")).toBeInTheDocument();
-    expect(screen.getByText("Transaction Log")).toBeInTheDocument();
+    expect(screen.getByText("Ledger Log")).toBeInTheDocument();
   });
 
   it("maps URL filters to the transaction query and clears them", async () => {
     const user = userEvent.setup();
     mocks.search.value =
-      "clientId=client_acme&type=BUY_DEBIT&fromDate=2026-07-28&toDate=2026-08-03";
+      "clientId=client_acme&type=FILL&fromDate=2026-07-28&toDate=2026-08-03";
     render(<LedgerPage />);
 
     expect(mocks.useGetTransactionsQuery).toHaveBeenCalledWith({
       clientId: "client_acme",
-      type: "BUY_DEBIT",
+      type: "FILL",
       fromDate: "2026-07-28",
       toDate: "2026-08-03",
       limit: 10,
@@ -103,7 +119,7 @@ describe("LedgerPage", () => {
     });
 
     await user.click(screen.getByRole("button", { name: "Clear filters" }));
-    expect(mocks.replace).toHaveBeenCalledWith("/ledger");
+    expect(mocks.replace).toHaveBeenCalledWith("/admin/ledger");
   });
 
   it("writes filter changes to the URL", async () => {
@@ -115,7 +131,7 @@ describe("LedgerPage", () => {
     await user.click(screen.getByRole("option", { name: "Acme Capital" }));
 
     expect(mocks.replace).toHaveBeenCalledWith(
-      "/ledger?clientId=client_acme",
+      "/admin/ledger?clientId=client_acme",
     );
   });
 
@@ -144,11 +160,11 @@ describe("LedgerPage", () => {
     });
 
     await user.click(screen.getByRole("button", { name: "Next page" }));
-    await user.click(screen.getByRole("button", { name: "Sort by Amount" }));
+    await user.click(screen.getByRole("button", { name: "Sort by Timestamp" }));
     await waitFor(() => {
       expect(mocks.useGetTransactionsQuery).toHaveBeenLastCalledWith({
         limit: 10,
-        sortBy: "amount",
+        sortBy: "timestamp",
         sortDirection: "asc",
       });
     });
@@ -160,7 +176,7 @@ describe("LedgerPage", () => {
     await waitFor(() => {
       expect(mocks.useGetTransactionsQuery).toHaveBeenLastCalledWith({
         limit: 20,
-        sortBy: "amount",
+        sortBy: "timestamp",
         sortDirection: "asc",
       });
     });
@@ -177,7 +193,7 @@ describe("LedgerPage", () => {
     expect(screen.getByRole("alert")).toHaveTextContent(
       "Client balances could not be loaded.",
     );
-    expect(screen.getByText("Transaction Log")).toBeInTheDocument();
+    expect(screen.getByText("Ledger Log")).toBeInTheDocument();
 
     mocks.useGetBalancesQuery.mockReturnValue({
       data: balances,
@@ -192,7 +208,7 @@ describe("LedgerPage", () => {
     rerender(<LedgerPage />);
 
     expect(screen.getByRole("alert")).toHaveTextContent(
-      "Transactions could not be loaded.",
+      "Ledger entries could not be loaded.",
     );
     expect(screen.getByText("Client Balances")).toBeInTheDocument();
   });

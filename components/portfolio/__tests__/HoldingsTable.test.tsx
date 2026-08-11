@@ -45,18 +45,23 @@ const mockHoldings = [
   { symbol: "MSFT", qty: 5, avgCost: 400 },
 ];
 
+const selectedUserProps = {
+  endUserId: mockUser.endUserId,
+  clientId: mockUser.clientId,
+};
+
 describe("HoldingsTable", () => {
   it("shows a prompt when no user is selected", () => {
     mocks.selectedUser = null;
-    render(<HoldingsTable />);
-    expect(screen.getByText(/select an end-user/i)).toBeInTheDocument();
+    render(<HoldingsTable endUserId="" clientId="" />);
+    expect(screen.getByText(/select an end user/i)).toBeInTheDocument();
   });
 
   it("shows a loading skeleton while holdings are fetching", () => {
     mocks.selectedUser = mockUser;
     mocks.holdingsLoading = true;
     mocks.holdingsData = undefined;
-    render(<HoldingsTable />);
+    render(<HoldingsTable {...selectedUserProps} />);
     // Skeleton element rendered (no table present)
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
     mocks.holdingsLoading = false;
@@ -67,7 +72,7 @@ describe("HoldingsTable", () => {
     mocks.holdingsLoading = false;
     mocks.holdingsError = true;
     mocks.holdingsData = undefined;
-    render(<HoldingsTable />);
+    render(<HoldingsTable {...selectedUserProps} />);
     expect(screen.getByRole("alert")).toBeInTheDocument();
     mocks.holdingsError = false;
   });
@@ -75,14 +80,14 @@ describe("HoldingsTable", () => {
   it("shows empty state when holdings array is empty", () => {
     mocks.selectedUser = mockUser;
     mocks.holdingsData = [];
-    render(<HoldingsTable />);
+    render(<HoldingsTable {...selectedUserProps} />);
     expect(screen.getByText(/no holdings available/i)).toBeInTheDocument();
   });
 
   it("renders the holdings table with symbol and quantity columns", () => {
     mocks.selectedUser = mockUser;
     mocks.holdingsData = mockHoldings;
-    render(<HoldingsTable />);
+    render(<HoldingsTable {...selectedUserProps} />);
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getByText("AAPL")).toBeInTheDocument();
     expect(screen.getByText("MSFT")).toBeInTheDocument();
@@ -92,7 +97,7 @@ describe("HoldingsTable", () => {
     mocks.selectedUser = mockUser;
     mocks.holdingsData = [{ symbol: "AAPL", qty: 10, avgCost: 200 }];
     mocks.pricingData = undefined;
-    render(<HoldingsTable />);
+    render(<HoldingsTable {...selectedUserProps} />);
     const naCells = screen.getAllByText("N/A");
     expect(naCells.length).toBeGreaterThan(0);
   });
@@ -101,7 +106,7 @@ describe("HoldingsTable", () => {
     mocks.selectedUser = mockUser;
     mocks.holdingsData = [{ symbol: "AAPL", qty: 10, avgCost: 200 }];
     mocks.pricingData = { symbol: "AAPL", rawPrice: 220, buyPrice: 222, sellPrice: 218, buySpreadBps: 100, sellSpreadBps: 100 };
-    render(<HoldingsTable />);
+    render(<HoldingsTable {...selectedUserProps} />);
     // Market value = 10 * 218 = $2,180 (appears in row and footer total)
     const values = screen.getAllByText("$2,180.00");
     expect(values.length).toBeGreaterThanOrEqual(1);

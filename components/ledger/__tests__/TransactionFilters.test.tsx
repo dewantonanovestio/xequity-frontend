@@ -5,13 +5,13 @@ import { describe, expect, it, vi } from "vitest";
 import { TransactionFilters } from "@/components/ledger/TransactionFilters";
 import {
   EMPTY_TRANSACTION_FILTERS,
-  TRANSACTION_TYPES,
+  BACKEND_TRANSACTION_TYPES,
 } from "@/lib/ledger/ledgerUtils";
 
 describe("TransactionFilters", () => {
   it.each([
     ["Client", "Nanovest", "clientId", "client_nanovest"],
-    ["Transaction Type", "BUY_DEBIT", "type", "BUY_DEBIT"],
+    ["Transaction Type", "FILL", "type", "FILL"],
   ])(
     "emits the complete value when %s changes",
     async (label, option, key, expectedValue) => {
@@ -79,7 +79,7 @@ describe("TransactionFilters", () => {
     await user.keyboard("{Enter}");
 
     expect(
-      TRANSACTION_TYPES.every((type) =>
+      BACKEND_TRANSACTION_TYPES.every((type) =>
         Boolean(screen.getByRole("option", { name: type })),
       ),
     ).toBe(true);

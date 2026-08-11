@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import ReconPage from "@/app/(admin)/recon/page";
+import ReconPage from "@/app/admin/recon/page";
 import type { CashRecon, SupplyRecon } from "@/lib/types/recon";
 
 const mocks = vi.hoisted(() => ({

@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useParams } from "next/navigation";
 
-import { CollarPriceInput } from "@/components/trade/CollarPriceInput";
 import { ExtendedHoursToggle } from "@/components/trade/ExtendedHoursToggle";
 import { OrderTypeToggle } from "@/components/trade/OrderTypeToggle";
 import { SymbolSelect } from "@/components/trade/SymbolSelect";

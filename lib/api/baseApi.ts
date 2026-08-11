@@ -8,7 +8,8 @@ import type {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 
-import { getApiRequestUrl } from "@/lib/utils/env";
+import { mockBaseQuery } from "@/lib/mocks/mockBaseQuery";
+import { getApiRequestUrl, isMockMode } from "@/lib/utils/env";
 
 interface StandardApiResponse {
   success: boolean;
@@ -31,10 +32,15 @@ const baseQueryWithUnwrap: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  const result = await rawBaseQuery(args, api, extraOptions);
+  const result = isMockMode()
+    ? await mockBaseQuery(args)
+    : await rawBaseQuery(args, api, extraOptions);
 
   if (!("error" in result) && isStandardApiResponse(result.data)) {
-    return { data: result.data.data, meta: result.meta };
+    return {
+      data: result.data.data,
+      ...("meta" in result ? { meta: result.meta } : {}),
+    };
   }
 
   return result;

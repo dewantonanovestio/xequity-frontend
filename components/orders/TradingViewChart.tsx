@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 
 declare global {
   interface Window {
@@ -38,20 +38,20 @@ interface TradingViewChartProps {
 
 export function TradingViewChart({ symbol }: TradingViewChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const containerId = useRef(`tv_${Math.random().toString(36).slice(2)}`);
+  const containerId = `tv_${useId().replaceAll(":", "")}`;
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container || !symbol) return;
 
     container.innerHTML = "";
-    container.id = containerId.current;
+    container.id = containerId;
 
     loadTvScript(() => {
       if (!container.isConnected || !window.TradingView) return;
       const tvSymbol = symbol.includes(":") ? symbol : `NASDAQ:${symbol}`;
       new window.TradingView.widget({
-        container_id: containerId.current,
+        container_id: containerId,
         autosize: true,
         symbol: tvSymbol,
         interval: "D",
@@ -69,7 +69,7 @@ export function TradingViewChart({ symbol }: TradingViewChartProps) {
     return () => {
       container.innerHTML = "";
     };
-  }, [symbol]);
+  }, [containerId, symbol]);
 
   return <div ref={containerRef} className="h-full w-full" />;
 }

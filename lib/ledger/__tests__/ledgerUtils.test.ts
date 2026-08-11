@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  TRANSACTION_TYPES,
+  BACKEND_TRANSACTION_TYPES,
   getAmountTone,
   getTransactionTone,
 } from "@/lib/ledger/ledgerUtils";
@@ -9,13 +9,13 @@ import {
 describe("ledgerUtils", () => {
   it.each([
     ["DEPOSIT", "success"],
-    ["SELL_CREDIT", "success"],
-    ["DIVIDEND_CREDIT", "success"],
+    ["DIVIDEND", "success"],
+    ["REDEMPTION_FILL", "success"],
     ["WITHDRAWAL", "danger"],
-    ["BUY_DEBIT", "danger"],
-    ["BUY_HOLD", "warning"],
-    ["BUY_HOLD_RELEASE", "warning"],
-    ["SPREAD_REVENUE", "info"],
+    ["REGULATORY_FEE", "danger"],
+    ["HOLD", "warning"],
+    ["HOLD_RELEASE", "warning"],
+    ["FILL", "info"],
     ["CONVERSION", "info"],
   ] as const)("maps %s to the %s badge category", (type, expected) => {
     expect(getTransactionTone(type)).toBe(expected);
@@ -28,16 +28,18 @@ describe("ledgerUtils", () => {
   });
 
   it("exposes every transaction type exactly once", () => {
-    expect(TRANSACTION_TYPES).toEqual([
+    expect(BACKEND_TRANSACTION_TYPES).toEqual([
       "DEPOSIT",
       "WITHDRAWAL",
-      "BUY_HOLD",
-      "BUY_HOLD_RELEASE",
-      "BUY_DEBIT",
-      "SELL_CREDIT",
-      "DIVIDEND_CREDIT",
-      "SPREAD_REVENUE",
+      "FILL",
+      "REDEMPTION_FILL",
       "CONVERSION",
+      "DIVIDEND",
+      "SETTLEMENT",
+      "REGULATORY_FEE",
+      "HOLD",
+      "HOLD_RELEASE",
+      "GAS",
     ]);
   });
 });

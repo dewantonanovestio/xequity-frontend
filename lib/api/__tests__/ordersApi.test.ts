@@ -2,11 +2,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { baseApi } from "@/lib/api/baseApi";
 import { orderCollectionUrl, ordersApi } from "@/lib/api/ordersApi";
+import { resetMockState } from "@/lib/mocks/mockBaseQuery";
 import { store } from "@/lib/store/store";
 
 describe("ordersApi", () => {
   beforeEach(() => {
     vi.stubEnv("NEXT_PUBLIC_USE_MOCKS", "true");
+    resetMockState();
   });
 
   afterEach(() => {

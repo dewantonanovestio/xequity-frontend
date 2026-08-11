@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { TRANSACTION_TYPES } from "@/lib/ledger/ledgerUtils";
+import { BACKEND_TRANSACTION_TYPES } from "@/lib/ledger/ledgerUtils";
 import { mockBaseQuery } from "@/lib/mocks/mockBaseQuery";
 import orderFixtures from "@/lib/mocks/orders.json";
 import reconFixtures from "@/lib/mocks/recon.json";
@@ -142,11 +142,13 @@ describe("mockBaseQuery", () => {
       .filter((id): id is string => id !== null);
 
     expect(page.items.length).toBeGreaterThanOrEqual(30);
-    expect(new Set(page.items.map((item) => item.type))).toEqual(
-      new Set(TRANSACTION_TYPES),
-    );
+    expect(
+      page.items.every((item) =>
+        BACKEND_TRANSACTION_TYPES.includes(item.sourceType as (typeof BACKEND_TRANSACTION_TYPES)[number]),
+      ),
+    ).toBe(true);
     expect(new Set(page.items.map((item) => item.clientId))).toEqual(
-      new Set(["client_nanovest", "client_acme", "client_blockprime"]),
+      new Set(["client_nanovest", "client_acme", "client_blockprime", null]),
     );
     expect(
       [...new Set(page.items.map((item) => item.timestamp.slice(0, 10)))].sort(),
@@ -159,8 +161,8 @@ describe("mockBaseQuery", () => {
       "2026-08-02",
       "2026-08-03",
     ]);
-    expect(page.items.some((item) => item.endUserId === null)).toBe(true);
-    expect(page.items.some((item) => item.endUserId !== null)).toBe(true);
+    expect(page.items.some((item) => item.clientId === null)).toBe(true);
+    expect(page.items.some((item) => item.clientId !== null)).toBe(true);
     expect(page.items.some((item) => item.referenceId === null)).toBe(true);
     expect(references.length).toBeGreaterThan(0);
     expect(references.every((id) => orderIds.has(id))).toBe(true);
@@ -168,7 +170,7 @@ describe("mockBaseQuery", () => {
 
   it("combines exact ledger filters with inclusive date boundaries", async () => {
     const result = await readData<PaginatedTransactions>(
-      "/admin/ledger/transactions?clientId=client_nanovest&type=BUY_DEBIT&fromDate=2026-07-28&toDate=2026-08-03&limit=100",
+      "/admin/ledger/transactions?clientId=client_nanovest&type=FILL&fromDate=2026-07-28&toDate=2026-08-03&limit=100",
     );
     const exactDay = await readData<PaginatedTransactions>(
       "/admin/ledger/transactions?fromDate=2026-07-28&toDate=2026-07-28&limit=100",
@@ -178,7 +180,7 @@ describe("mockBaseQuery", () => {
     expect(
       result.items.every(
         (item) =>
-          item.clientId === "client_nanovest" && item.type === "BUY_DEBIT",
+          item.clientId === "client_nanovest" && item.sourceType === "FILL",
       ),
     ).toBe(true);
     expect(exactDay.items.length).toBeGreaterThan(0);
@@ -189,13 +191,13 @@ describe("mockBaseQuery", () => {
 
   it("sorts the full ledger result before applying the cursor", async () => {
     const first = await readData<PaginatedTransactions>(
-      "/admin/ledger/transactions?sortBy=amount&sortDirection=asc&limit=5",
+      "/admin/ledger/transactions?sortBy=debit&sortDirection=asc&limit=5",
     );
     const second = await readData<PaginatedTransactions>(
-      `/admin/ledger/transactions?sortBy=amount&sortDirection=asc&limit=5&cursor=${first.nextCursor}`,
+      `/admin/ledger/transactions?sortBy=debit&sortDirection=asc&limit=5&cursor=${first.nextCursor}`,
     );
-    const firstAmounts = first.items.map((item) => item.amount);
-    const secondAmounts = second.items.map((item) => item.amount);
+    const firstAmounts = first.items.map((item) => item.debit);
+    const secondAmounts = second.items.map((item) => item.debit);
 
     expect(firstAmounts).toEqual([...firstAmounts].sort((a, b) => a - b));
     expect(secondAmounts).toEqual([...secondAmounts].sort((a, b) => a - b));

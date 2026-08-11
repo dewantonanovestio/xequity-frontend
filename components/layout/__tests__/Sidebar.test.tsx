@@ -6,7 +6,6 @@ import StoreProvider from "@/lib/store/StoreProvider";
 
 const mocks = vi.hoisted(() => ({
   mockUsePathname: vi.fn(),
-  isUserMode: false,
 }));
 
 vi.mock("next/navigation", () => ({
@@ -17,17 +16,11 @@ vi.mock("@/components/layout/RoleSwitcher", () => ({
   RoleSwitcher: () => <div>Role switcher</div>,
 }));
 
-vi.mock("@/lib/store/hooks", () => ({
-  useAppSelector: () => mocks.isUserMode,
-  useAppDispatch: () => vi.fn(),
-}));
-
 const renderSidebar = () => render(<StoreProvider><Sidebar /></StoreProvider>);
 
 describe("Sidebar – admin mode", () => {
   beforeEach(() => {
-    mocks.isUserMode = false;
-    mocks.mockUsePathname.mockReturnValue("/ledger");
+    mocks.mockUsePathname.mockReturnValue("/admin/ledger");
   });
 
   it("provides links to every dashboard view", () => {
@@ -35,15 +28,15 @@ describe("Sidebar – admin mode", () => {
 
     expect(screen.getByRole("link", { name: "Orders" })).toHaveAttribute(
       "href",
-      "/orders",
+      "/admin/orders",
     );
     expect(screen.getByRole("link", { name: "Ledger" })).toHaveAttribute(
       "href",
-      "/ledger",
+      "/admin/ledger",
     );
     expect(screen.getByRole("link", { name: "Recon" })).toHaveAttribute(
       "href",
-      "/recon",
+      "/admin/recon",
     );
   });
 
@@ -60,7 +53,7 @@ describe("Sidebar – admin mode", () => {
   });
 
   it("keeps a parent link active on a nested route", () => {
-    mocks.mockUsePathname.mockReturnValue("/orders/ord_123");
+    mocks.mockUsePathname.mockReturnValue("/admin/orders/ord_123");
 
     renderSidebar();
 
@@ -73,16 +66,15 @@ describe("Sidebar – admin mode", () => {
 
 describe("Sidebar – user mode", () => {
   beforeEach(() => {
-    mocks.isUserMode = true;
-    mocks.mockUsePathname.mockReturnValue("/orders");
+    mocks.mockUsePathname.mockReturnValue("/client/client-1/orders");
   });
 
   it("shows user navigation links instead of admin links", () => {
     renderSidebar();
-    expect(screen.getByRole("link", { name: "Orders" })).toHaveAttribute("href", "/orders");
-    expect(screen.getByRole("link", { name: "Portfolio" })).toHaveAttribute("href", "/portfolio");
-    expect(screen.getByRole("link", { name: "P&L" })).toHaveAttribute("href", "/pnl");
-    expect(screen.getByRole("link", { name: "History" })).toHaveAttribute("href", "/history");
+    expect(screen.getByRole("link", { name: "Orders" })).toHaveAttribute("href", "/client/client-1/orders");
+    expect(screen.getByRole("link", { name: "Portfolio" })).toHaveAttribute("href", "/client/client-1/portfolio");
+    expect(screen.getByRole("link", { name: "P&L" })).toHaveAttribute("href", "/client/client-1/pnl");
+    expect(screen.getByRole("link", { name: "History" })).toHaveAttribute("href", "/client/client-1/history");
     expect(screen.queryByRole("link", { name: "Trade" })).not.toBeInTheDocument();
   });
 

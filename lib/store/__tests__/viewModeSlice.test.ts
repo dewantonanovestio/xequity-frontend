@@ -14,6 +14,10 @@ const user: EndUser = {
   externalId: 'external-1',
   walletId: 'wallet-1',
   displayName: 'Test User',
+  subAccountId: null,
+  state: 'ACTIVE',
+  createdAt: '2026-08-01T00:00:00.000Z',
+  updatedAt: '2026-08-01T00:00:00.000Z',
 };
 
 describe('viewModeSlice', () => {

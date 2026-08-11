@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import OrdersPage from "@/app/orders/page";
+import OrdersPage from "@/app/admin/orders/page";
 import Home from "@/app/page";
 import StoreProvider from "@/lib/store/StoreProvider";
 import type { Order } from "@/lib/types/order";
@@ -31,6 +31,13 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/lib/api/ordersApi", () => ({
   useGetOrdersQuery: apiMocks.getOrders,
   useGetRedemptionsQuery: apiMocks.getRedemptions,
+}));
+
+vi.mock("@/lib/api/clientApi", () => ({
+  useGetClientsQuery: () => ({
+    data: [{ id: "client_nanovest", legalName: "Nanovest" }],
+    isLoading: false,
+  }),
 }));
 
 function makeOrder(id: string, side: Order["side"]): Order {
@@ -104,10 +111,10 @@ describe("dashboard routes", () => {
     screen.getByRole("combobox", { name: "Symbol" }).focus();
     await user.keyboard("{Enter}");
     await user.click(screen.getByRole("option", { name: "AAPL" }));
-    expect(navigationMocks.replace).toHaveBeenCalledWith("/orders?symbol=AAPL");
+    expect(navigationMocks.replace).toHaveBeenCalledWith("/admin/orders?symbol=AAPL");
 
     await user.click(screen.getByRole("button", { name: "Clear filters" }));
-    expect(navigationMocks.replace).toHaveBeenCalledWith("/orders");
+    expect(navigationMocks.replace).toHaveBeenCalledWith("/admin/orders");
   });
 
   it("opens a row through the router", async () => {
@@ -115,7 +122,7 @@ describe("dashboard routes", () => {
     render(<StoreProvider><OrdersPage /></StoreProvider>);
 
     await user.click(screen.getByRole("row", { name: "Open order ord_001" }));
-    expect(navigationMocks.push).toHaveBeenCalledWith("/orders/ord_001");
+    expect(navigationMocks.push).toHaveBeenCalledWith("/admin/orders/ord_001");
   });
 
   it("renders a complete-list error when either source fails", () => {
@@ -135,6 +142,6 @@ describe("dashboard routes", () => {
   it("redirects the root route to the order tracker", () => {
     render(<StoreProvider><Home /></StoreProvider>);
     expect(navigationMocks.replace).toHaveBeenCalledOnce();
-    expect(navigationMocks.replace).toHaveBeenCalledWith("/orders");
+    expect(navigationMocks.replace).toHaveBeenCalledWith("/admin/orders");
   });
 });

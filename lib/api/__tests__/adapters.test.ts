@@ -142,8 +142,10 @@ describe("real API response adapters", () => {
             id: "entry-uuid",
             timestamp: "2026-08-04T10:00:00.000Z",
             clientId: "client-uuid",
-            type: "HOLD",
-            amount: "125.5",
+            accountType: "CLIENT_HOLD",
+            sourceType: "HOLD",
+            debit: "125.5",
+            credit: "0",
             referenceId: "order-uuid",
             description: null,
           },
@@ -152,11 +154,12 @@ describe("real API response adapters", () => {
         totalCount: 1,
       }).items[0],
     ).toMatchObject({
-      clientName: "client-uuid",
-      type: "HOLD",
-      amount: 125.5,
-      runningBalance: null,
-      description: "",
+      clientId: "client-uuid",
+      accountType: "CLIENT_HOLD",
+      sourceType: "HOLD",
+      debit: 125.5,
+      credit: 0,
+      description: null,
     });
 
     expect(

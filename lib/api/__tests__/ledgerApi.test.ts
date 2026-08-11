@@ -21,16 +21,16 @@ describe("ledgerApi", () => {
     expect(
       ledgerCollectionUrl("/admin/ledger/transactions", {
         clientId: "client_acme",
-        type: "BUY_DEBIT",
+        type: "FILL",
         fromDate: "2026-07-28",
         toDate: "2026-08-03",
         cursor: "10",
         limit: 20,
-        sortBy: "amount",
+        sortBy: "debit",
         sortDirection: "asc",
       }),
     ).toBe(
-      "/admin/ledger/transactions?clientId=client_acme&type=BUY_DEBIT&fromDate=2026-07-28&toDate=2026-08-03&cursor=10&limit=20&sortBy=amount&sortDirection=asc",
+      "/admin/ledger/transactions?clientId=client_acme&type=FILL&fromDate=2026-07-28&toDate=2026-08-03&cursor=10&limit=20&sortBy=debit&sortDirection=asc",
     );
 
     expect(
@@ -60,7 +60,7 @@ describe("ledgerApi", () => {
         type: "HOLD",
         fromDate: "2026-08-03",
         toDate: "2026-08-04",
-        sortBy: "amount",
+        sortBy: "debit",
         sortDirection: "asc",
       }),
     ).toBe(
@@ -72,20 +72,20 @@ describe("ledgerApi", () => {
     const result = await store.dispatch(
       ledgerApi.endpoints.getTransactions.initiate({
         clientId: "client_nanovest",
-        type: "BUY_DEBIT",
+        type: "FILL",
         fromDate: "2026-07-28",
         toDate: "2026-08-03",
         limit: 10,
-        sortBy: "amount",
+        sortBy: "debit",
         sortDirection: "asc",
       }),
     );
-    const amounts = result.data?.items.map((item) => item.amount) ?? [];
+    const debits = result.data?.items.map((item) => item.debit) ?? [];
 
     expect(result.data?.totalCount).toBe(2);
     expect(result.data?.items.every((item) => item.clientId === "client_nanovest"))
       .toBe(true);
-    expect(amounts).toEqual([-4800, -3400]);
+    expect(debits).toEqual([3400, 4800]);
     expect(result.data?.nextCursor).toBeNull();
   });
 });

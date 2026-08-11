@@ -12,7 +12,7 @@ import reconFixtures from "@/lib/mocks/recon.json";
 import symbolFixtures from "@/lib/mocks/symbols.json";
 import activityFixtures from "@/lib/mocks/activities.json";
 import balanceFixtures from "@/lib/mocks/balance.json";
-import { TRANSACTION_TYPES } from "@/lib/ledger/ledgerUtils";
+import { BACKEND_TRANSACTION_TYPES } from "@/lib/ledger/ledgerUtils";
 import type {
   PaginatedTransactions,
   SortDirection,
@@ -74,11 +74,11 @@ const staticRoutes: Record<string, () => unknown> = {
 
 const transactionSortFields: TransactionSortField[] = [
   "timestamp",
-  "clientName",
-  "endUserId",
-  "type",
-  "amount",
-  "runningBalance",
+  "clientId",
+  "accountType",
+  "sourceType",
+  "debit",
+  "credit",
   "referenceId",
   "description",
 ];
@@ -178,7 +178,7 @@ function readTransactionQuery(
 
   return {
     clientId: value("clientId"),
-    type: TRANSACTION_TYPES.find((type) => type === rawType),
+    type: BACKEND_TRANSACTION_TYPES.find((type) => type === rawType),
     fromDate: value("fromDate"),
     toDate: value("toDate"),
     cursor: value("cursor"),
@@ -219,7 +219,7 @@ function listTransactions(
 
     return (
       (!query.clientId || transaction.clientId === query.clientId) &&
-      (!query.type || transaction.type === query.type) &&
+      (!query.type || transaction.sourceType === query.type) &&
       (!query.fromDate || transactionDay >= query.fromDate) &&
       (!query.toDate || transactionDay <= query.toDate)
     );
@@ -413,6 +413,19 @@ function handleDynamicRoute(
       ["BURN_FAILED"],
       "FILLED",
       `Redemption ${id} is not in BURN_FAILED`,
+    );
+  }
+
+  const deleteMatch = path.match(/^\/(orders|redemptions)\/([^/]+)$/);
+  if (method === "DELETE" && deleteMatch) {
+    const kind = deleteMatch[1] as CollectionKind;
+    const id = deleteMatch[2];
+    return transitionOrder(
+      kind,
+      id,
+      ["SUBMITTED", "VALIDATED", "QUEUED", "OPEN_EXECUTING", "PARTIALLY_FILLED", "LOCKING", "LOCKED", "SELLING"],
+      "CANCELLED",
+      `${entityName(kind)} ${id} cannot be cancelled from its current state`,
     );
   }
 
