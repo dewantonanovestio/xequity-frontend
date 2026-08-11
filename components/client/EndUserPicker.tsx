@@ -23,7 +23,8 @@ export function EndUserPicker({ clientId, basePath }: EndUserPickerProps) {
 
   const activeUser = endUsersQuery.data?.find((u) => u.endUserId === endUserId);
 
-  const handleChange = (value: string) => {
+  const handleChange = (value: string | null) => {
+    if (!value) return;
     router.replace(`${basePath}?endUserId=${value}`);
   };
 
