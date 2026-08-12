@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
+import { PlusIcon } from "lucide-react";
 import { formatDate } from "@/lib/utils/formatters";
 import {
   useGetAdminSymbolsQuery,
@@ -16,6 +17,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -107,24 +117,45 @@ function SymbolStatusSelect({ ticker, currentStatus }: { ticker: string; current
   );
 }
 
+function BoolCell({ value }: { value: boolean }) {
+  return (
+    <span className={value ? "text-emerald-600" : "text-muted-foreground"}>
+      {value ? "Yes" : "No"}
+    </span>
+  );
+}
+
+const COL_COUNT = 10;
+
 function SymbolsTable() {
   const { data: symbols = [], isLoading, isError } = useGetAdminSymbolsQuery();
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>All Symbols</CardTitle>
-        <CardDescription>
-          Onboarded symbols with their token proxy address and current status.
-        </CardDescription>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <CardTitle>All Symbols</CardTitle>
+            <CardDescription className="mt-1">
+              Onboarded symbols with their token proxy address, trading flags, and current status.
+            </CardDescription>
+          </div>
+          <OnboardSymbolDialog />
+        </div>
       </CardHeader>
-      <CardContent className="px-0">
-        <Table>
+      <CardContent className="overflow-x-auto px-0">
+        <Table className="min-w-max">
           <TableHeader>
             <TableRow>
               <TableHead className="pl-4">Ticker</TableHead>
               <TableHead>Token Proxy Address</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Alpaca</TableHead>
+              <TableHead>Tradable</TableHead>
+              <TableHead>Fractionable</TableHead>
+              <TableHead>Overnight</TableHead>
+              <TableHead>Frac. Overnight</TableHead>
+              <TableHead>Last Synced</TableHead>
               <TableHead className="pr-4">Created</TableHead>
             </TableRow>
           </TableHeader>
@@ -132,16 +163,16 @@ function SymbolsTable() {
             {isLoading ? (
               Array.from({ length: 3 }, (_, i) => (
                 <TableRow key={i}>
-                  {Array.from({ length: 4 }, (__, j) => (
+                  {Array.from({ length: COL_COUNT }, (__, j) => (
                     <TableCell key={j} className="first:pl-4 last:pr-4">
-                      <Skeleton className="h-5 w-28" />
+                      <Skeleton className="h-5 w-20" />
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : isError ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 px-4 text-center">
+                <TableCell colSpan={COL_COUNT} className="h-24 px-4 text-center">
                   <p role="alert" className="font-medium text-destructive">
                     Symbols could not be loaded.
                   </p>
@@ -149,7 +180,7 @@ function SymbolsTable() {
               </TableRow>
             ) : symbols.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="h-24 px-4 text-center text-muted-foreground">
+                <TableCell colSpan={COL_COUNT} className="h-24 px-4 text-center text-muted-foreground">
                   No symbols onboarded yet.
                 </TableCell>
               </TableRow>
@@ -159,10 +190,7 @@ function SymbolsTable() {
                   <TableCell className="pl-4 font-medium">{symbol.ticker}</TableCell>
                   <TableCell>
                     {symbol.tokenProxyAddr ? (
-                      <span
-                        className="font-mono text-xs"
-                        title={symbol.tokenProxyAddr}
-                      >
+                      <span className="font-mono text-xs" title={symbol.tokenProxyAddr}>
                         {symbol.tokenProxyAddr.slice(0, 10)}…{symbol.tokenProxyAddr.slice(-6)}
                       </span>
                     ) : (
@@ -172,7 +200,17 @@ function SymbolsTable() {
                   <TableCell>
                     <SymbolStatusSelect ticker={symbol.ticker} currentStatus={symbol.status} />
                   </TableCell>
-                  <TableCell className="pr-4 text-muted-foreground">
+                  <TableCell className="capitalize text-xs text-muted-foreground">
+                    {symbol.alpacaStatus || "—"}
+                  </TableCell>
+                  <TableCell><BoolCell value={symbol.tradable} /></TableCell>
+                  <TableCell><BoolCell value={symbol.fractionable} /></TableCell>
+                  <TableCell><BoolCell value={symbol.tradableOvernight} /></TableCell>
+                  <TableCell><BoolCell value={symbol.fractionableOvernight} /></TableCell>
+                  <TableCell className="text-muted-foreground whitespace-nowrap">
+                    {symbol.lastSyncedAt ? formatDate(symbol.lastSyncedAt) : "—"}
+                  </TableCell>
+                  <TableCell className="pr-4 text-muted-foreground whitespace-nowrap">
                     {formatDate(symbol.createdAt)}
                   </TableCell>
                 </TableRow>
@@ -185,7 +223,8 @@ function SymbolsTable() {
   );
 }
 
-function OnboardSymbolForm() {
+function OnboardSymbolDialog() {
+  const [open, setOpen] = useState(false);
   const [onboard, { isLoading }] = useOnboardSymbolMutation();
   const [ticker, setTicker] = useState("");
   const [tokenProxyAddr, setTokenProxyAddr] = useState("");
@@ -193,7 +232,7 @@ function OnboardSymbolForm() {
 
   const canSubmit = ticker.trim() && tokenProxyAddr.trim() && !isLoading;
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
     try {
@@ -204,21 +243,40 @@ function OnboardSymbolForm() {
       setMessage({ tone: "success", text: `Symbol "${result.ticker}" onboarded successfully.` });
       setTicker("");
       setTokenProxyAddr("");
+      setTimeout(() => setOpen(false), 1200);
     } catch (error) {
       setMessage({ tone: "error", text: apiErrorMessage(error) });
     }
   };
 
+  const handleOpenChange = (next: boolean) => {
+    if (!next) {
+      setTicker("");
+      setTokenProxyAddr("");
+      setMessage(null);
+    }
+    setOpen(next);
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Onboard New Symbol</CardTitle>
-        <CardDescription>
-          Register a new tokenized equity symbol with its on-chain proxy address.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form className="grid gap-4 max-w-lg" onSubmit={handleSubmit}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogTrigger
+        render={
+          <Button size="sm" className="gap-1.5">
+            <PlusIcon className="size-4" />
+            Onboard new stock
+          </Button>
+        }
+      />
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Onboard New Stock</DialogTitle>
+          <DialogDescription>
+            Register a new tokenized equity symbol with its on-chain proxy address.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form id="onboard-symbol-form" className="grid gap-4" onSubmit={handleSubmit}>
           <div className="grid gap-1.5">
             <label htmlFor="symbol-ticker" className="text-sm font-medium">
               Ticker
@@ -249,20 +307,20 @@ function OnboardSymbolForm() {
           {message ? (
             <p
               role={message.tone === "error" ? "alert" : "status"}
-              className={
-                message.tone === "success" ? "text-sm text-emerald-600" : "text-sm text-destructive"
-              }
+              className={message.tone === "success" ? "text-sm text-emerald-600" : "text-sm text-destructive"}
             >
               {message.text}
             </p>
           ) : null}
-
-          <Button type="submit" disabled={!canSubmit}>
-            {isLoading ? "Onboarding…" : "Onboard symbol"}
-          </Button>
         </form>
-      </CardContent>
-    </Card>
+
+        <DialogFooter showCloseButton>
+          <Button type="submit" form="onboard-symbol-form" disabled={!canSubmit}>
+            {isLoading ? "Onboarding…" : "Onboard stock"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -280,7 +338,6 @@ export function SymbolsView() {
       </header>
 
       <SymbolsTable />
-      <OnboardSymbolForm />
     </section>
   );
 }

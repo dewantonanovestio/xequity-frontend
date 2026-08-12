@@ -45,12 +45,12 @@ const sessionOverrides = new Map<string, Order>();
 const sessionOrders: Order[] = [];
 
 const adminSymbols: AdminSymbol[] = [
-  { ticker: "AAPL", tokenProxyAddr: "0x1234567890abcdef1234567890abcdef12345678", status: "ACTIVE", createdAt: "2024-01-10T00:00:00Z", updatedAt: "2024-01-10T00:00:00Z" },
-  { ticker: "MSFT", tokenProxyAddr: "0xabcdef1234567890abcdef1234567890abcdef12", status: "ACTIVE", createdAt: "2024-01-10T00:00:00Z", updatedAt: "2024-01-10T00:00:00Z" },
-  { ticker: "GOOGL", tokenProxyAddr: "0x7890abcdef1234567890abcdef1234567890abcd", status: "ACTIVE", createdAt: "2024-01-10T00:00:00Z", updatedAt: "2024-01-10T00:00:00Z" },
-  { ticker: "TSLA", tokenProxyAddr: null, status: "MINT_HALTED", createdAt: "2024-02-01T00:00:00Z", updatedAt: "2024-03-01T00:00:00Z" },
-  { ticker: "NVDA", tokenProxyAddr: "0xef1234567890abcdef1234567890abcdef123456", status: "ACTIVE", createdAt: "2024-02-15T00:00:00Z", updatedAt: "2024-02-15T00:00:00Z" },
-  { ticker: "SPY", tokenProxyAddr: "0x567890abcdef1234567890abcdef1234567890ab", status: "ACTIVE", createdAt: "2024-03-01T00:00:00Z", updatedAt: "2024-03-01T00:00:00Z" },
+  { ticker: "AAPL", tokenProxyAddr: "0x1234567890abcdef1234567890abcdef12345678", status: "ACTIVE", tradable: true, fractionable: true, tradableOvernight: true, fractionableOvernight: true, alpacaStatus: "active", lastSyncedAt: "2026-08-11T12:45:00.020Z", createdAt: "2024-01-10T00:00:00Z", updatedAt: "2024-01-10T00:00:00Z" },
+  { ticker: "MSFT", tokenProxyAddr: "0xabcdef1234567890abcdef1234567890abcdef12", status: "ACTIVE", tradable: true, fractionable: true, tradableOvernight: false, fractionableOvernight: false, alpacaStatus: "active", lastSyncedAt: "2026-08-11T12:45:00.020Z", createdAt: "2024-01-10T00:00:00Z", updatedAt: "2024-01-10T00:00:00Z" },
+  { ticker: "GOOGL", tokenProxyAddr: "0x7890abcdef1234567890abcdef1234567890abcd", status: "ACTIVE", tradable: true, fractionable: true, tradableOvernight: false, fractionableOvernight: false, alpacaStatus: "active", lastSyncedAt: "2026-08-11T12:45:00.020Z", createdAt: "2024-01-10T00:00:00Z", updatedAt: "2024-01-10T00:00:00Z" },
+  { ticker: "TSLA", tokenProxyAddr: null, status: "MINT_HALTED", tradable: false, fractionable: true, tradableOvernight: false, fractionableOvernight: false, alpacaStatus: "inactive", lastSyncedAt: "2026-08-10T08:00:00.000Z", createdAt: "2024-02-01T00:00:00Z", updatedAt: "2024-03-01T00:00:00Z" },
+  { ticker: "NVDA", tokenProxyAddr: "0xef1234567890abcdef1234567890abcdef123456", status: "ACTIVE", tradable: true, fractionable: true, tradableOvernight: false, fractionableOvernight: false, alpacaStatus: "active", lastSyncedAt: "2026-08-11T12:45:00.020Z", createdAt: "2024-02-15T00:00:00Z", updatedAt: "2024-02-15T00:00:00Z" },
+  { ticker: "SPY", tokenProxyAddr: "0x567890abcdef1234567890abcdef1234567890ab", status: "ACTIVE", tradable: true, fractionable: false, tradableOvernight: false, fractionableOvernight: false, alpacaStatus: "active", lastSyncedAt: "2026-08-11T12:45:00.020Z", createdAt: "2024-03-01T00:00:00Z", updatedAt: "2024-03-01T00:00:00Z" },
 ];
 
 export function resetMockState(): void {
@@ -469,7 +469,12 @@ function handleDynamicRoute(
       return { error: { status: 409, data: { message: `Symbol ${ticker} already exists` } } };
     }
     const now = new Date().toISOString();
-    const newSymbol: AdminSymbol = { ticker, tokenProxyAddr, status: "ACTIVE", createdAt: now, updatedAt: now };
+    const newSymbol: AdminSymbol = {
+      ticker, tokenProxyAddr, status: "ACTIVE",
+      tradable: false, fractionable: false, tradableOvernight: false, fractionableOvernight: false,
+      alpacaStatus: "", lastSyncedAt: "",
+      createdAt: now, updatedAt: now,
+    };
     adminSymbols.push(newSymbol);
     return { data: newSymbol };
   }

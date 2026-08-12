@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
+import { CheckIcon, CopyIcon, PlusIcon } from "lucide-react";
 import { formatDate } from "@/lib/utils/formatters";
 import { useGetClientsQuery, useOnboardClientMutation } from "@/lib/api/clientApi";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -32,16 +42,42 @@ function apiErrorMessage(error: unknown): string {
   return "The request could not be completed.";
 }
 
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      title={copied ? "Copied!" : "Copy address"}
+      className="ml-1.5 inline-flex items-center text-muted-foreground transition-colors hover:text-foreground"
+    >
+      {copied ? <CheckIcon className="size-3 text-emerald-600" /> : <CopyIcon className="size-3" />}
+    </button>
+  );
+}
+
 function ClientsTable() {
   const { data: clients = [], isLoading, isError } = useGetClientsQuery();
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>All Clients</CardTitle>
-        <CardDescription>
-          Registered clients with their spread configuration and deposit address.
-        </CardDescription>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <CardTitle>All Clients</CardTitle>
+            <CardDescription className="mt-1">
+              Registered clients with their spread configuration and deposit address.
+            </CardDescription>
+          </div>
+          <OnboardClientDialog />
+        </div>
       </CardHeader>
       <CardContent className="px-0">
         <Table>
@@ -87,8 +123,11 @@ function ClientsTable() {
                   <TableCell className="tabular-nums">{client.sellSpreadBps}</TableCell>
                   <TableCell>
                     {client.depositAddress ? (
-                      <span className="font-mono text-xs" title={client.depositAddress}>
-                        {client.depositAddress.slice(0, 10)}…{client.depositAddress.slice(-6)}
+                      <span className="inline-flex items-center">
+                        <span className="font-mono text-xs" title={client.depositAddress}>
+                          {client.depositAddress.slice(0, 10)}…{client.depositAddress.slice(-6)}
+                        </span>
+                        <CopyButton text={client.depositAddress} />
                       </span>
                     ) : (
                       <span className="text-muted-foreground">—</span>
@@ -107,7 +146,8 @@ function ClientsTable() {
   );
 }
 
-function OnboardClientForm() {
+function OnboardClientDialog() {
+  const [open, setOpen] = useState(false);
   const [onboard, { isLoading }] = useOnboardClientMutation();
   const [legalName, setLegalName] = useState("");
   const [buySpreadBps, setBuySpreadBps] = useState("");
@@ -122,7 +162,7 @@ function OnboardClientForm() {
     depositAddress.trim() &&
     !isLoading;
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
     try {
@@ -137,21 +177,42 @@ function OnboardClientForm() {
       setBuySpreadBps("");
       setSellSpreadBps("");
       setDepositAddress("");
+      setTimeout(() => setOpen(false), 1200);
     } catch (error) {
       setMessage({ tone: "error", text: apiErrorMessage(error) });
     }
   };
 
+  const handleOpenChange = (next: boolean) => {
+    if (!next) {
+      setLegalName("");
+      setBuySpreadBps("");
+      setSellSpreadBps("");
+      setDepositAddress("");
+      setMessage(null);
+    }
+    setOpen(next);
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Onboard New Client</CardTitle>
-        <CardDescription>
-          Register a new client with their spread configuration and USDT deposit address.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form className="grid gap-4 max-w-lg" onSubmit={handleSubmit}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogTrigger
+        render={
+          <Button size="sm" className="gap-1.5">
+            <PlusIcon className="size-4" />
+            Onboard new client
+          </Button>
+        }
+      />
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Onboard New Client</DialogTitle>
+          <DialogDescription>
+            Register a new client with their spread configuration and USDT deposit address.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form id="onboard-client-form" className="grid gap-4" onSubmit={handleSubmit}>
           <div className="grid gap-1.5">
             <label htmlFor="client-legal-name" className="text-sm font-medium">
               Legal Name
@@ -220,13 +281,15 @@ function OnboardClientForm() {
               {message.text}
             </p>
           ) : null}
+        </form>
 
-          <Button type="submit" disabled={!canSubmit}>
+        <DialogFooter showCloseButton>
+          <Button type="submit" form="onboard-client-form" disabled={!canSubmit}>
             {isLoading ? "Onboarding…" : "Onboard client"}
           </Button>
-        </form>
-      </CardContent>
-    </Card>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -244,7 +307,6 @@ export function ClientsView() {
       </header>
 
       <ClientsTable />
-      <OnboardClientForm />
     </section>
   );
 }

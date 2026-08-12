@@ -23,6 +23,12 @@ export interface AdminSymbol {
   readonly ticker: string;
   readonly tokenProxyAddr: string | null;
   readonly status: SymbolStatus;
+  readonly tradable: boolean;
+  readonly fractionable: boolean;
+  readonly tradableOvernight: boolean;
+  readonly fractionableOvernight: boolean;
+  readonly alpacaStatus: string;
+  readonly lastSyncedAt: string;
   readonly createdAt: string;
   readonly updatedAt: string;
 }

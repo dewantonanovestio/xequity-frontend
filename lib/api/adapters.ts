@@ -372,6 +372,12 @@ function adaptSingleAdminSymbol(item: unknown): AdminSymbol {
     ticker: asString(row.ticker),
     tokenProxyAddr: asNullableString(row.tokenProxyAddr),
     status: (VALID_SYMBOL_STATUSES.includes(status as SymbolStatus) ? status : "ACTIVE") as SymbolStatus,
+    tradable: Boolean(row.tradable),
+    fractionable: Boolean(row.fractionable),
+    tradableOvernight: Boolean(row.tradableOvernight),
+    fractionableOvernight: Boolean(row.fractionableOvernight),
+    alpacaStatus: asString(row.alpacaStatus),
+    lastSyncedAt: asString(row.lastSyncedAt),
     createdAt: asString(row.createdAt),
     updatedAt: asString(row.updatedAt),
   };
