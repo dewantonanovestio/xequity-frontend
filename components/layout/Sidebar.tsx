@@ -36,6 +36,7 @@ const clientNavItems = [
   { page: "history", label: "History", icon: Clock },
   { page: "activities", label: "Activities", icon: Activity },
   { page: "end-users", label: "End Users", icon: Users },
+  { page: "treasury", label: "Treasury", icon: Landmark },
 ];
 
 export default function Sidebar() {

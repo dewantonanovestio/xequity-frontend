@@ -33,3 +33,54 @@ export interface WireWithdrawal {
   createdAt: string;
   updatedAt: string;
 }
+
+// Client-side deposit/withdrawal types
+
+export interface CreateDepositRequest {
+  clientId: string;
+  txHash: string;
+  amountUsdt: string;
+}
+
+export interface Deposit {
+  id: string;
+  clientId: string;
+  txHash: string;
+  amountUsdt: string;
+  state: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ClientWallet {
+  id: string;
+  clientId: string;
+  address: string;
+  allowlistState: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateWithdrawalRequest {
+  clientId: string;
+  addressId: string;
+  amountUsdt: string;
+  clientIdemKey: string;
+}
+
+export interface Withdrawal {
+  id: string;
+  clientId: string;
+  clientName?: string;
+  addressId: string;
+  amountUsdt: string;
+  clientIdemKey: string;
+  txHash: string | null;
+  state: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ConfirmWithdrawalRequest {
+  txHash: string;
+}

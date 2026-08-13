@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
+import { ArrowDownToLine, ArrowUpFromLine, Check, X } from "lucide-react";
 import { formatDate, formatCurrency } from "@/lib/utils/formatters";
 import {
   useAlpacaDepositMutation,
   useCreateWireWithdrawalMutation,
   useGetWithdrawalBankConfigQuery,
   useGetWireWithdrawalsQuery,
+  useGetAdminWithdrawalsQuery,
+  useApproveWithdrawalMutation,
+  useRejectWithdrawalMutation,
+  useConfirmWithdrawalMutation,
 } from "@/lib/api/treasuryApi";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,6 +49,11 @@ function apiErrorMessage(error: unknown): string {
     }
   }
   return "The request could not be completed.";
+}
+
+function truncateHash(hash: string) {
+  if (hash.length <= 16) return hash;
+  return `${hash.slice(0, 10)}…${hash.slice(-6)}`;
 }
 
 const bankFieldLabels: Record<string, string> = {
@@ -202,7 +211,7 @@ function DepositDialog() {
   );
 }
 
-function WithdrawalDialog() {
+function WireWithdrawalDialog() {
   const [open, setOpen] = useState(false);
   const [withdraw, { isLoading }] = useCreateWireWithdrawalMutation();
   const [amount, setAmount] = useState("");
@@ -247,25 +256,25 @@ function WithdrawalDialog() {
         render={
           <Button size="sm" variant="outline" className="gap-1.5">
             <ArrowUpFromLine className="size-4" />
-            Withdraw
+            Wire Withdraw
           </Button>
         }
       />
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Admin Withdrawal</DialogTitle>
+          <DialogTitle>Admin Wire Withdrawal</DialogTitle>
           <DialogDescription>
-            Submit an admin withdrawal request.
+            Submit an admin wire withdrawal request.
           </DialogDescription>
         </DialogHeader>
 
-        <form id="withdrawal-form" className="grid gap-4" onSubmit={handleSubmit}>
+        <form id="wire-withdrawal-form" className="grid gap-4" onSubmit={handleSubmit}>
           <div className="grid gap-1.5">
-            <label htmlFor="withdrawal-amount" className="text-sm font-medium">
+            <label htmlFor="wire-withdrawal-amount" className="text-sm font-medium">
               Amount (USD)
             </label>
             <Input
-              id="withdrawal-amount"
+              id="wire-withdrawal-amount"
               type="number"
               min="0"
               step="0.01"
@@ -276,11 +285,11 @@ function WithdrawalDialog() {
           </div>
 
           <div className="grid gap-1.5">
-            <label htmlFor="withdrawal-idempotency-key" className="text-sm font-medium">
+            <label htmlFor="wire-withdrawal-idempotency-key" className="text-sm font-medium">
               Idempotency Key
             </label>
             <Input
-              id="withdrawal-idempotency-key"
+              id="wire-withdrawal-idempotency-key"
               placeholder="WIRE-2026-08-13-001"
               value={idempotencyKey}
               onChange={(e) => setIdempotencyKey(e.target.value)}
@@ -288,11 +297,11 @@ function WithdrawalDialog() {
           </div>
 
           <div className="grid gap-1.5">
-            <label htmlFor="withdrawal-notes" className="text-sm font-medium">
+            <label htmlFor="wire-withdrawal-notes" className="text-sm font-medium">
               Notes
             </label>
             <Input
-              id="withdrawal-notes"
+              id="wire-withdrawal-notes"
               placeholder="Reason for withdrawal"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -310,7 +319,7 @@ function WithdrawalDialog() {
         </form>
 
         <DialogFooter showCloseButton>
-          <Button type="submit" form="withdrawal-form" disabled={!canSubmit}>
+          <Button type="submit" form="wire-withdrawal-form" disabled={!canSubmit}>
             {isLoading ? "Submitting…" : "Submit Withdrawal"}
           </Button>
         </DialogFooter>
@@ -319,7 +328,93 @@ function WithdrawalDialog() {
   );
 }
 
-const stateColors: Record<string, string> = {
+// --- Confirm Withdrawal Dialog ---
+
+function ConfirmWithdrawalDialog({ withdrawalId }: { withdrawalId: string }) {
+  const [open, setOpen] = useState(false);
+  const [confirm, { isLoading }] = useConfirmWithdrawalMutation();
+  const [txHash, setTxHash] = useState("");
+  const [message, setMessage] = useState<{ tone: "success" | "error"; text: string } | null>(null);
+
+  const canSubmit = txHash.trim() && !isLoading;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage(null);
+    try {
+      await confirm({ id: withdrawalId, body: { txHash: txHash.trim() } }).unwrap();
+      setMessage({ tone: "success", text: "Withdrawal confirmed." });
+      setTxHash("");
+      setTimeout(() => setOpen(false), 1200);
+    } catch (error) {
+      setMessage({ tone: "error", text: apiErrorMessage(error) });
+    }
+  };
+
+  const handleOpenChange = (next: boolean) => {
+    if (!next) {
+      setTxHash("");
+      setMessage(null);
+    }
+    setOpen(next);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogTrigger
+        render={
+          <Button size="sm" variant="outline" className="gap-1">
+            Confirm
+          </Button>
+        }
+      />
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Confirm Withdrawal</DialogTitle>
+          <DialogDescription>
+            Provide the on-chain transaction hash to confirm this withdrawal.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form id={`confirm-form-${withdrawalId}`} className="grid gap-4" onSubmit={handleSubmit}>
+          <div className="grid gap-1.5">
+            <label htmlFor={`confirm-txhash-${withdrawalId}`} className="text-sm font-medium">
+              Transaction Hash
+            </label>
+            <Input
+              id={`confirm-txhash-${withdrawalId}`}
+              placeholder="0x..."
+              value={txHash}
+              onChange={(e) => setTxHash(e.target.value)}
+            />
+            <p className="text-xs text-muted-foreground">
+              0x-prefixed, 64 hex characters.
+            </p>
+          </div>
+
+          {message ? (
+            <p
+              role={message.tone === "error" ? "alert" : "status"}
+              className={message.tone === "success" ? "text-sm text-emerald-600" : "text-sm text-destructive"}
+            >
+              {message.text}
+            </p>
+          ) : null}
+        </form>
+
+        <DialogFooter showCloseButton>
+          <Button type="submit" form={`confirm-form-${withdrawalId}`} disabled={!canSubmit}>
+            {isLoading ? "Confirming…" : "Confirm"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// --- Wire Withdrawals ---
+
+const wireStateColors: Record<string, string> = {
   PENDING: "bg-yellow-100 text-yellow-800",
   SUBMITTED: "bg-blue-100 text-blue-800",
   COMPLETE: "bg-emerald-100 text-emerald-800",
@@ -330,7 +425,7 @@ const stateColors: Record<string, string> = {
   LEDGER_POSTED: "bg-emerald-100 text-emerald-800",
 };
 
-function WithdrawalsTable() {
+function WireWithdrawalsTable() {
   const { data: withdrawals = [], isLoading, isError } = useGetWireWithdrawalsQuery();
 
   return (
@@ -338,14 +433,14 @@ function WithdrawalsTable() {
       <CardHeader>
         <div className="flex items-center justify-between gap-4">
           <div>
-            <CardTitle>Withdrawals</CardTitle>
+            <CardTitle>Wire Withdrawals</CardTitle>
             <CardDescription className="mt-1">
-              History of admin wire withdrawal requests.
+              Admin wire withdrawal requests to bank.
             </CardDescription>
           </div>
           <div className="flex gap-2">
             <DepositDialog />
-            <WithdrawalDialog />
+            <WireWithdrawalDialog />
           </div>
         </div>
       </CardHeader>
@@ -383,7 +478,7 @@ function WithdrawalsTable() {
             ) : withdrawals.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-24 px-4 text-center text-muted-foreground">
-                  No withdrawals yet.
+                  No wire withdrawals yet.
                 </TableCell>
               </TableRow>
             ) : (
@@ -394,7 +489,7 @@ function WithdrawalsTable() {
                   </TableCell>
                   <TableCell>
                     <span
-                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${stateColors[w.state] ?? "bg-gray-100 text-gray-800"}`}
+                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${wireStateColors[w.state] ?? "bg-gray-100 text-gray-800"}`}
                     >
                       {w.state}
                     </span>
@@ -406,6 +501,147 @@ function WithdrawalsTable() {
                   </TableCell>
                   <TableCell className="pr-4 text-muted-foreground">
                     {w.completedAt ? formatDate(w.completedAt) : "–"}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+}
+
+// --- Client Withdrawals ---
+
+const clientWithdrawalStateColors: Record<string, string> = {
+  PENDING_APPROVAL: "bg-yellow-100 text-yellow-800",
+  APPROVED: "bg-blue-100 text-blue-800",
+  SUBMITTING: "bg-blue-100 text-blue-800",
+  SUBMITTED: "bg-blue-100 text-blue-800",
+  CONFIRMED: "bg-emerald-100 text-emerald-800",
+  FAILED: "bg-red-100 text-red-800",
+  REJECTED: "bg-red-100 text-red-800",
+};
+
+function ClientWithdrawalActions({ id, state }: { id: string; state: string }) {
+  const [approve, { isLoading: approving }] = useApproveWithdrawalMutation();
+  const [reject, { isLoading: rejecting }] = useRejectWithdrawalMutation();
+
+  if (state === "PENDING_APPROVAL") {
+    return (
+      <div className="flex gap-1">
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-7 gap-1 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
+          disabled={approving || rejecting}
+          onClick={() => approve(id)}
+        >
+          <Check className="size-3.5" />
+          Approve
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-7 gap-1 text-red-700 hover:bg-red-50 hover:text-red-800"
+          disabled={approving || rejecting}
+          onClick={() => reject(id)}
+        >
+          <X className="size-3.5" />
+          Reject
+        </Button>
+      </div>
+    );
+  }
+
+  if (state === "APPROVED") {
+    return <ConfirmWithdrawalDialog withdrawalId={id} />;
+  }
+
+  return <span className="text-muted-foreground">–</span>;
+}
+
+function ClientWithdrawalsTable() {
+  const { data: withdrawals = [], isLoading, isError } = useGetAdminWithdrawalsQuery();
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Client Withdrawals</CardTitle>
+        <CardDescription className="mt-1">
+          Client USDT withdrawal requests requiring admin action.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="px-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="pl-4">Client</TableHead>
+              <TableHead>Amount (USDT)</TableHead>
+              <TableHead>State</TableHead>
+              <TableHead>Idempotency Key</TableHead>
+              <TableHead>Tx Hash</TableHead>
+              <TableHead>Created</TableHead>
+              <TableHead className="pr-4">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              Array.from({ length: 3 }, (_, i) => (
+                <TableRow key={i}>
+                  {Array.from({ length: 7 }, (__, j) => (
+                    <TableCell key={j} className="first:pl-4 last:pr-4">
+                      <Skeleton className="h-5 w-28" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : isError ? (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 px-4 text-center">
+                  <p role="alert" className="font-medium text-destructive">
+                    Client withdrawals could not be loaded.
+                  </p>
+                </TableCell>
+              </TableRow>
+            ) : withdrawals.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 px-4 text-center text-muted-foreground">
+                  No client withdrawals yet.
+                </TableCell>
+              </TableRow>
+            ) : (
+              withdrawals.map((w) => (
+                <TableRow key={w.id}>
+                  <TableCell className="pl-4 font-medium">
+                    {w.clientName || "–"}
+                  </TableCell>
+                  <TableCell className="tabular-nums font-medium">
+                    {w.amountUsdt}
+                  </TableCell>
+                  <TableCell>
+                    <span
+                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${clientWithdrawalStateColors[w.state] ?? "bg-gray-100 text-gray-800"}`}
+                    >
+                      {w.state}
+                    </span>
+                  </TableCell>
+                  <TableCell className="font-mono text-xs">{w.clientIdemKey}</TableCell>
+                  <TableCell>
+                    {w.txHash ? (
+                      <span className="font-mono text-xs" title={w.txHash}>
+                        {truncateHash(w.txHash)}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">–</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(w.createdAt)}
+                  </TableCell>
+                  <TableCell className="pr-4">
+                    <ClientWithdrawalActions id={w.id} state={w.state} />
                   </TableCell>
                 </TableRow>
               ))
@@ -431,7 +667,8 @@ export function TreasuryView() {
       </header>
 
       <BankInfoCard />
-      <WithdrawalsTable />
+      <ClientWithdrawalsTable />
+      <WireWithdrawalsTable />
     </section>
   );
 }
