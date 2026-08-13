@@ -180,6 +180,11 @@ export function ClientOrderForm({
     if (user) dispatch(selectEndUser(user));
   };
 
+  const handleTypeChange = (nextType: OrderType) => {
+    setType(nextType);
+    if (nextType === "LIMIT") setInputMode("qty");
+  };
+
   const handleSideChange = (nextSide: "BUY" | "SELL") => {
     setSide(nextSide);
     setAmount("");
@@ -327,7 +332,7 @@ export function ClientOrderForm({
       <div className="grid grid-cols-2 gap-2 items-end">
         <OrderTypeToggle
           value={type}
-          onChange={setType}
+          onChange={handleTypeChange}
           disabled={extendedHours}
         />
         <ExtendedHoursToggle
@@ -362,19 +367,21 @@ export function ClientOrderForm({
             <label htmlFor="trade-amount" className="text-xs font-medium text-muted-foreground">
               {inputMode === "qty" ? "Quantity" : "Dollar amount"}
             </label>
-            <div className="flex gap-1">
-              {(["qty", "notional"] as const).map((option) => (
-                <Button
-                  key={option}
-                  type="button"
-                  size="xs"
-                  variant={inputMode === option ? "secondary" : "ghost"}
-                  onClick={() => { setInputMode(option); setAmount(""); }}
-                >
-                  {option === "qty" ? "Qty" : "Notional"}
-                </Button>
-              ))}
-            </div>
+            {type === "MARKET" ? (
+              <div className="flex gap-1">
+                {(["qty", "notional"] as const).map((option) => (
+                  <Button
+                    key={option}
+                    type="button"
+                    size="xs"
+                    variant={inputMode === option ? "secondary" : "ghost"}
+                    onClick={() => { setInputMode(option); setAmount(""); }}
+                  >
+                    {option === "qty" ? "Qty" : "Notional"}
+                  </Button>
+                ))}
+              </div>
+            ) : null}
           </div>
           <Input
             id="trade-amount"

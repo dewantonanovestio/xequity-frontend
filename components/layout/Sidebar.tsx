@@ -7,6 +7,7 @@ import {
   ChartCandlestick,
   ClipboardList,
   Clock,
+  Landmark,
   Scale,
   TrendingUp,
   Users,
@@ -25,6 +26,7 @@ const adminNavItems = [
   { page: "recon", label: "Recon", icon: Scale },
   { page: "clients", label: "Clients", icon: Building2 },
   { page: "symbols", label: "Symbols", icon: ChartCandlestick },
+  { page: "treasury", label: "Treasury", icon: Landmark },
 ];
 
 const clientNavItems = [
